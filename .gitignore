@@ -1,0 +1,68 @@
+# Python
+*.py[cod]
+*__pycache__/
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+*.pyo
+*.pyd
+
+# Virtualenv
+.env
+.venv
+ENV/
+env/
+venv/
+env.bak/
+venv.bak/
+
+# Django
+*.log
+*.pot
+*.pyc
+*.mo
+*.sqlite3
+*.swp
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# MacOS
+.DS_Store
+
+# MySQL
+*.sql
+
+# Environments
+.env
+
+# Static files
+staticfiles/
+
+# Media files
+media/
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+
+# Docker
+docker-compose.override.yml
+.env.docker
+
+# Celery
+celerybeat-schedule
+
+# Migrations
+*/migrations/__pycache__/
+*/migrations/*.py[cod]

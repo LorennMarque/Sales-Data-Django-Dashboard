@@ -26,37 +26,39 @@ data = pd.read_csv("data/supermarket_sales.csv")
 #         return self.likes >= 3
 
 class Sale(models.Model):
-    # Invoice ID,
-    invoice_id = models.CharField(max_length=255)
-    # Branch,
-    branch = models.CharField(max_length=1)
-    # City,
-    city = models.CharField(max_length=20)
-    # Customer type,
-    costumer_type = models.CharField(max_length=10) # Pero el máximo sería 6, Member ó Normal
-    # Gender,
-    gender = models.CharField(max_length=10) # Pero el máximo sería 6, Fermale ó Male
-    # Product line,
-    product_line = models.CharField(max_length=255)
-    # Unit price,
-    unit_price = models.FloatField()
-    # Quantity,
-    quantity = models.FloatField()
-    # Tax 5%,
-    tax = models.CharField(max_length=10) # Pero el máximo sería 6, Fermale ó Male
-    # Total,
-    total = models.FloatField()
-    # Date,
-    date = models.DateField()
-    # Time,
-    time = models.TimeField()
-    # Payment,
-    payment = models.CharField(max_length=10)
-    # cogs,
-    cogs = models.FloatField()
-    # gross margin percentage,
-    gross_margin_percentage = models.FloatField()
-    # gross income,
-    gross_income = models.FloatField()
-    # Rating
-    rating = models.FloatField()
+    # Row ID,
+    row_id = models.FloatField()
+    # Order ID,
+    order_id = models.CharField(max_length=255)
+    # Order Date,
+    order_date = models.DateField()
+    # ship_date,
+    ship_date = models.DateField(max_length=255) 
+    # ship_mode,
+    ship_mode = models.CharField(max_length=255)
+    # customer_id,
+    customer_id = models.CharField(max_length=255)
+    # customer_name,
+    customer_name = models.CharField(max_length=255)
+    # segment,
+    segment = models.CharField(max_length=255)
+    # country,
+    country = models.CharField(max_length=255)
+    # city,
+    city = models.CharField(max_length=255)
+    # state,
+    state = models.CharField(max_length=255)
+    # postal_code,
+    postal_code = models.FloatField()
+    # region,
+    region = models.CharField(max_length=255)
+    # product_id,
+    product_id = models.CharField(max_length=255)
+    # category,
+    category = models.CharField(max_length=255)
+    # sub_category,
+    sub_category = models.CharField(max_length=255)
+    # gross product_name,
+    product_name = models.FloatField()
+    # sales
+    sales = models.FloatField()

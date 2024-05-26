@@ -8,6 +8,19 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import io
 import base64
+import time
+import json
+
+data = pd.read_csv("data/supermarket_sales.csv")
+
+df = data
+# Group data
+df['Order Date'] = pd.to_datetime(df['Order Date'], format='%d/%m/%Y')
+
+df['day'] = df['Order Date'].dt.day
+df['month'] = df['Order Date'].dt.month
+df['year'] = df['Order Date'].dt.year
+
 
 def visualize_data(request):
     with open("data/supermarket_sales.csv", "r", encoding="UTF-8") as f:
@@ -77,39 +90,14 @@ def data_describe(request):
     return render(request, 'descriptions.html', context)
 
 def render_chart(request):
-    # data = pd.read_csv("data/supermarket_sales.csv")
-    # data_avg = data.groupby("Order Date")["Sales"]
+    data = df.groupby('year')['Sales'].agg('sum').reset_index()  # Reset index to make 'year' a column
+    
+    # Convert data to JSON
+    data_json = data.to_json(orient='records')
 
-    # plt.figure(figsize=(20, 6))
-    # data_avg.plot(kind="bar", color="darkblue")
-    # plt.ylabel("Sales")
-    # plt.xlabel("Date")
-    # plt.title("Ventas")
-    # plt.xticks(rotation=45, ha="right")
-    # plt.tight_layout()
-    # # plt.show()
-
-    # my_stringIObytes = io.BytesIO()
-    # plt.savefig(my_stringIObytes, format='jpg')
-    # my_stringIObytes.seek(0)
-    # chart_img = base64.b64encode(my_stringIObytes.read()).decode()
-
-    fig, ax = plt.subplots()
-    ax.plot([1,2,3,4], [1,4,2,3])
-
-    # Save the chart to a BytesIO object
-    my_stringIObytes = io.BytesIO()
-    plt.savefig(my_stringIObytes, format='jpg')
-    my_stringIObytes.seek(0)
-
-    # Convert the chart image to base64
-    chart_img = base64.b64encode(my_stringIObytes.getvalue()).decode()
-    my_stringIObytes.close()  # Close the BytesIO object to free up memory
-
+    # Render the chart
     context = {
-        "chart": chart_img
+        "data_json": data_json
     }
 
-    # data.drop(data[data["Sales"] < 0].index, inplace=True)
     return render(request, 'charts.html', context)
-

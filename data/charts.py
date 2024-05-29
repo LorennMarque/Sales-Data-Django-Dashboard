@@ -13,26 +13,26 @@ df['delivery'] = df['Ship Date'] - df['Order Date']
 
 # print("Cuarto:  Ingresos promedio por cliente")
 # print((df.groupby("Customer ID")['Sales'].mean()).reset_index()['Sales'])
-# ==================== VISTA GENERAL ====================================
-# print("Primero:  monto de ventas en 2017")
-# print(df[df['year'] == 2017]['Sales'].sum())
-
+# ==================== VISTA GENERAL ==================================
+print("Primero:  monto de ventas en 2017")
+print(df[df['year'] == 2017]['Sales'].sum())
+# df[df['year'] == 2017]['Sales'].sum()
 # print("Segundo: cantidad de ventas en 2017")
 # print(df[df['year'] == 2017]['Sales'].count())
 
 # print("Tercero: Tiempo promedio de envío (promedio)")
 # print(f"Tarda {(df['delivery'].dt.total_seconds() / 3600).mean()} horas.")
 
-print("Cuarto:  Ingresos promedio por cliente")
-print(round(((df.groupby("Customer ID")['Sales'].sum()).reset_index()['Sales']).mean(),3))
+# print("Cuarto:  Ingresos promedio por cliente")
+# print(round(((df.groupby("Customer ID")['Sales'].sum()).reset_index()['Sales']).mean(),3))
 
 # print("Quinto: Monto de ventas por estado")
 # print(df.groupby('State')['Sales'].sum().reset_index().sort_values("Sales",ascending=False))
 
 # print("Productos mas vendidos (como el de best selling products)")
-# print(df["Product Name"].value_counts())
+# print(df["Product Name"].value_counts().reset_index())
 
-# ==================== PEDIDOS =========================================
+# ==================== PEDIDOS =====================================
 
 # print("Tiempo promedio de envio por Ship Mode BARCHART")
 # print(round(df.groupby('Ship Mode')['delivery'].mean()))
@@ -45,7 +45,7 @@ print(round(((df.groupby("Customer ID")['Sales'].sum()).reset_index()['Sales']).
 # pedidos_table = df[['Order ID','Customer Name','Order Date','Ship Date','delivery']]
 # print(pedidos_table)
 
-# ==================== PRODUCTOS ======================================
+# ==================== PRODUCTOS ====================================
 # print("grafico de 5 subcategorias mas vendidas ")
 # print(df.groupby("Sub-Category")["Sales"].sum().reset_index().sort_values("Sales", ascending=False))
 
@@ -53,12 +53,12 @@ print(round(((df.groupby("Customer ID")['Sales'].sum()).reset_index()['Sales']).
 # print(df.groupby(['Product Name','Category','Sub-Category'])['Sales'].count().reset_index().sort_values("Sales",ascending=False))
 
 
-# ==================== CLIENTES ======================================
+# ==================== CLIENTES ====================================
 # print("grafico de ventas por ciudad")
 # print(df.groupby('City')['Sales'].sum().reset_index().sort_values("Sales",ascending=False))
 
 # print("Clientes que más compraros :)")
-# print("=============================================")
+# print("==========================================")
 # print(df.groupby(['Order ID', 'Customer Name'])['Sales'].sum().reset_index().sort_values("Sales",ascending=False))
 
 # print("tabla de clientes con nombre del cliente,  gasto, fecha del ultimo pedido de cada cliente y ciudad") # SALES ES MONTO TOTAL GASTADO4

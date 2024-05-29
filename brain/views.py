@@ -164,7 +164,7 @@ def vista_general(request):
 
     # 1. Guardar una variable con los datos
     year_sales_total = df[df['year'] == 2017]['Sales'].sum()
-
+    print(f"🔥🔥{year_sales_total}🔥🔥")
     year_sales_amount = df[df['year'] == 2017]['Sales'].count()
     
     avg_delivery_time = (df['delivery'].dt.total_seconds() / 3600).mean()
@@ -174,12 +174,12 @@ def vista_general(request):
     sales_amount_per_state = df.groupby('State')['Sales'].sum().reset_index().sort_values("Sales",ascending=False)
     sales_amount_per_state = sales_amount_per_state.to_json(orient='records')
 
-    best_selling_products = df["Product Name"].value_counts()
+    best_selling_products = df["Product Name"].value_counts().reset_index()
     best_selling_products = best_selling_products.to_json(orient='records')
 
     # 3. Enviarla por context
     context = {
-        "year_sales": year_sales_total,
+        "year_sales_total": year_sales_total,
         "year_sales_amount" : year_sales_amount,
         "avg_delivery_time" : avg_delivery_time,
         "avg_income_per_costumer" : avg_income_per_costumer,

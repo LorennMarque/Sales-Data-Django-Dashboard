@@ -153,3 +153,28 @@ def nav(request):
         "sales_per_year": "hola",
     }
     return render(request, 'navegacion.html', context)
+
+def vista_general(request):
+    context = {
+        "sales_per_year": "hola",
+    }
+    return render(request, 'vista_general.html', context)
+
+def pedidos(request):
+    context = {
+        "sales_per_year": "hola",
+    }
+    return render(request, 'pedidos.html', context)
+
+def productos(request):
+    context = {
+        "sales_per_year": "hola",
+    }
+    return render(request, 'productos.html', context)
+
+def clientes(request):
+    context = {
+        "sales_per_year": "hola",
+    }
+    return render(request, 'clientes.html', context)
+

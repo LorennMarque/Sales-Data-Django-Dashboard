@@ -12,10 +12,12 @@ data = pd.read_csv("data/supermarket_sales.csv")
 df = data
 # Group data
 df['Order Date'] = pd.to_datetime(df['Order Date'], format='%d/%m/%Y')
+df['Ship Date'] = pd.to_datetime(df['Ship Date'], format='%d/%m/%Y')
 
 df['day'] = df['Order Date'].dt.day
 df['month'] = df['Order Date'].dt.month
 df['year'] = df['Order Date'].dt.year
+df['delivery'] = df['Ship Date'] - df['Order Date']
 
 
 def visualize_data(request):
@@ -152,29 +154,95 @@ def nav(request):
     context = {
         "sales_per_year": "hola",
     }
+
     return render(request, 'navegacion.html', context)
 
+
+
+# ==================== VISTA GENERAL ====================================
 def vista_general(request):
+
+    # 1. Guardar una variable con los datos
+    year_sales_total = df[df['year'] == 2017]['Sales'].sum()
+
+    year_sales_amount = df[df['year'] == 2017]['Sales'].count()
+    
+    avg_delivery_time = (df['delivery'].dt.total_seconds() / 3600).mean()
+
+    avg_income_per_costumer = round(((df.groupby("Customer ID")['Sales'].sum()).reset_index()['Sales']).mean(),3)
+
+    sales_amount_per_state = df.groupby('State')['Sales'].sum().reset_index().sort_values("Sales",ascending=False)
+    sales_amount_per_state = sales_amount_per_state.to_json(orient='records')
+
+    best_selling_products = df["Product Name"].value_counts()
+    best_selling_products = best_selling_products.to_json(orient='records')
+
+    # 3. Enviarla por context
     context = {
-        "sales_per_year": "hola",
+        "year_sales": year_sales_total,
+        "year_sales_amount" : year_sales_amount,
+        "avg_delivery_time" : avg_delivery_time,
+        "avg_income_per_costumer" : avg_income_per_costumer,
+        "sales_amount_per_state" : sales_amount_per_state,
+        "best_selling_products" : best_selling_products
     }
     return render(request, 'vista_general.html', context)
 
+
+# ==================== PEDIDOS =========================================
 def pedidos(request):
+
+    avg_delivery_time_per_ship_mode = round(df.groupby('Ship Mode')['delivery'].mean())
+    avg_delivery_time_per_ship_mode = avg_delivery_time_per_ship_mode.to_json(orient='records')
+    
+    monthly_delivery_time = round(df.groupby(["year","month"])['delivery'].mean().dt.total_seconds() / 3600,3)
+    monthly_delivery_time = monthly_delivery_time.to_json(orient='records')
+
+    orders = df[['Order ID','Customer Name','Order Date','Ship Date','delivery']]
+    orders = orders.to_json(orient='records')
+
     context = {
-        "sales_per_year": "hola",
+        "avg_delivery_time_per_ship_mode": avg_delivery_time_per_ship_mode,
+        "monthly_delivery_time" : monthly_delivery_time,
+        "orders": orders
     }
+    
     return render(request, 'pedidos.html', context)
 
+
+# ==================== PRODUCTOS ======================================
 def productos(request):
+
+    best_selling_sub_categories = df.groupby("Sub-Category")["Sales"].sum().reset_index().sort_values("Sales", ascending=False)
+    best_selling_sub_categories = best_selling_sub_categories.to_json(orient='records')
+    
+    products = df.groupby(['Product Name','Category','Sub-Category'])['Sales'].count().reset_index().sort_values("Sales",ascending=False)
+    products = products.to_json(orient='records')
+
     context = {
-        "sales_per_year": "hola",
+        "best_selling_sub_categories": best_selling_sub_categories,
+        "productos": products
     }
     return render(request, 'productos.html', context)
 
+
+# ==================== CLIENTES ======================================
 def clientes(request):
+    
+    sales_per_city = df.groupby('City')['Sales'].sum().reset_index().sort_values("Sales",ascending=False)
+    sales_per_city = sales_per_city.to_json(orient='records')
+    
+    most_valuable_customer = df.groupby(['Order ID', 'Customer Name'])['Sales'].sum().reset_index().sort_values("Sales",ascending=False)
+    most_valuable_customer = most_valuable_customer.to_json(orient='records')
+
+    customers = df.groupby(["Customer Name"]).agg(total_sales=("Sales","sum"), last_order =('Order Date', 'max')).reset_index().sort_values("total_sales",ascending = False)
+    customers = customers.to_json(orient='records')
+    
     context = {
-        "sales_per_year": "hola",
+        "sales_per_city" : sales_per_city,
+        "most_valuable_customer" : most_valuable_customer,
+        "customers" : customers
+        
     }
     return render(request, 'clientes.html', context)
 

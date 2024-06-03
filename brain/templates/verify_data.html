@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Data</title>
+</head>
+<body>
+    <h1>Sales Data</h1>
+    <ul>
+        {% for sale in sales %}
+            <li>{{ sale.customer_name }} - {{ sale.product_name }} - {{ sale.sales }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+    

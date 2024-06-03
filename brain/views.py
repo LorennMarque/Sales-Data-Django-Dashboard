@@ -1,11 +1,10 @@
-from django.shortcuts import render
-
 # Create your views here.
 from django.shortcuts import render, redirect
-from brain.models import Sale
 import csv
 import pandas as pd
 import matplotlib.pyplot as plt
+from django.db.models import Sum, Count, Avg
+from brain.models import Sale
 
 data = pd.read_csv("data/supermarket_sales.csv")
 
@@ -162,14 +161,18 @@ def nav(request):
 # ==================== VISTA GENERAL ====================================
 def vista_general(request):
 
+    sales_per_year = df.groupby('year')['Sales'].agg('sum').reset_index()  
+    sales_per_year = sales_per_year.to_json(orient='records')
+
     # 1. Guardar una variable con los datos
-    year_sales_total = df[df['year'] == 2017]['Sales'].sum()
-    print(f"🔥🔥{year_sales_total}🔥🔥")
+    year_sales_total = round(df['Sales'].sum(),2)
+    # year_sales_total = df[df['year'] == 2017]['Sales'].sum()
+    year_sales_total = f"{int(year_sales_total):,}".replace(",", ".") + "," + str(year_sales_total).split('.')[1]
     year_sales_amount = df[df['year'] == 2017]['Sales'].count()
     
-    avg_delivery_time = (df['delivery'].dt.total_seconds() / 3600).mean()
+    avg_delivery_time = round((df['delivery'].dt.total_seconds() / 3600).mean(),2)
 
-    avg_income_per_costumer = round(((df.groupby("Customer ID")['Sales'].sum()).reset_index()['Sales']).mean(),3)
+    avg_income_per_costumer = round(((df.groupby("Customer ID")['Sales'].sum()).reset_index()['Sales']).mean(),2)
 
     sales_amount_per_state = df.groupby('State')['Sales'].sum().reset_index().sort_values("Sales",ascending=False)
     sales_amount_per_state = sales_amount_per_state.to_json(orient='records')
@@ -179,6 +182,7 @@ def vista_general(request):
 
     # 3. Enviarla por context
     context = {
+        "sales_per_year": sales_per_year,
         "year_sales_total": year_sales_total,
         "year_sales_amount" : year_sales_amount,
         "avg_delivery_time" : avg_delivery_time,
@@ -188,6 +192,44 @@ def vista_general(request):
     }
     return render(request, 'vista_general.html', context)
 
+# def vista_general(request):
+#     # Total de ventas en el año 2017
+#     year_sales_total = Sale.objects.filter(order_date__year=2017).aggregate(Sum('sales'))['sales__sum'] or 0
+
+#     # Cantidad de ventas en el año 2017
+#     year_sales_amount = Sale.objects.filter(order_date__year=2017).count()
+
+#     # Tiempo de entrega promedio en horas
+#     avg_delivery_time = Sale.objects.aggregate(avg_delivery=Avg('delivery_time'))['avg_delivery'] or 0
+
+#     # Ingreso promedio por cliente
+#     # Suma de las ventas agrupadas por cliente, luego se calcula el promedio de estas sumas
+#     avg_income_per_customer = round(Sale.objects.values('customer_id').annotate(total_sales=Sum('sales')).aggregate(Avg('total_sales'))['total_sales__avg'], 3) or 0
+
+#     # Total de ventas por estado
+#     # Se agrupan las ventas por estado y se calcula la suma de ventas para cada estado
+#     sales_amount_per_state = Sale.objects.values('state').annotate(total_sales=Sum('sales')).order_by('-total_sales')
+
+#     # Productos más vendidos
+#     # Se cuenta la cantidad de veces que aparece cada producto en las ventas y se ordena de mayor a menor
+#     best_selling_products = Sale.objects.values('product_name').annotate(total_sales=Count('product_name')).order_by('-total_sales')
+
+#     # Contexto para pasar a la plantilla
+#     context = {
+#         "year_sales_total": year_sales_total,  # Total de ventas en el año 2017
+#         "year_sales_amount": year_sales_amount,  # Cantidad de ventas en el año 2017
+#         "avg_delivery_time": avg_delivery_time,  # Tiempo de entrega promedio en horas
+#         "avg_income_per_customer": avg_income_per_customer,  # Ingreso promedio por cliente
+#         "sales_amount_per_state": sales_amount_per_state,  # Total de ventas por estado
+#         "best_selling_products": best_selling_products  # Productos más vendidos
+#     }
+#     return render(request, 'vista_general.html', context)
+
+
+# PRUEBAS IMPORTANTES NO MODIFICAR PORFA 
+def verify_data(request):
+    sales = Sale.objects.all()[:20]  # Obtener los primeros 10 registros
+    return render(request, 'verify_data.html', {'sales': sales})
 
 # ==================== PEDIDOS =========================================
 def pedidos(request):

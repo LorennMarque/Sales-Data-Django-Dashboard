@@ -92,13 +92,30 @@
                 <p>Welcome to the dashboard. This is your main content area.</p>
              
 <!-- ##################################################################### -->
-               
-                <h1>sales_per_city</h1>
+<div class="row">
+
+  <div class="col-lg-4">
+    <div class="card p-3">
+      <h1>sales_per_city</h1>
                 {{sales_per_city}}
-                <h1>most_valuable_customer</h1>
-                {{most_valuable_customer}}
-                <h1>customers</h1>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card p-3">
+      <h1>customers</h1>
                 {{customers}}
+    </div>
+  </div>
+
+</div>
+<div class="card p-3">
+  <h1>customers</h1>
+                {{customers}}
+</div>     
+             
+                
+              
 
                 "sales_per_city" : sales_per_city,
                 "most_valuable_customer" : most_valuable_customer,

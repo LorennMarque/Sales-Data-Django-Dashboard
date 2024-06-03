@@ -35,6 +35,7 @@
     </style>
 </head>
 <body>
+  
     <div class="container-fluid">
         <div class="row">
             <nav id="sidebar" class="col-md-3 col-lg-2 bg-dark d-md-block sidebar collapse">
@@ -92,19 +93,34 @@
                 <p>Welcome to the dashboard. This is your main content area.</p>
 
 <!-- ############################################################################################### -->
+<div class="row">
 
-                <h1>avg_delivery_time_per_ship_mode</h1>
-                {{avg_delivery_time_per_ship_mode}}
-                <h1>monthly_delivery_time</h1>
-                {{monthly_delivery_time}}
-                <h1>orders</h1>
-                {{orders}}
+  <div class="col-lg-4">
+    <div class="card p-3">
+      <h1>avg_delivery_time_per_ship_mode</h1>
+      {{avg_delivery_time_per_ship_mode}}
+    </div>
+  </div>
 
+  <div class="col-lg-8">
+    <div class="card p-3">
+      <h1>monthly_delivery_time</h1>
+      {{monthly_delivery_time}}
+    </div>
+  </div>
+
+</div>
+
+<div class="card p-3">
+  <h1>orders</h1>
+  {{orders}}
+</div>   
 <!-- ############################################################################################### -->
 
             </main>
         </div>
     </div>
+
 
     <script>
         feather.replace();

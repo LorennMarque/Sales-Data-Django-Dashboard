@@ -17,23 +17,28 @@
             color: white;
         }
 
-        main{
-            background-color:#F7F8FC;
+        main {
+            background-color: #F7F8FC;
         }
         
-        .nav-item a{
-          font-size:20px;
+        .nav-item a {
+            font-size: 20px;
         }
 
-        .nav-item.active{
-          background-color:#4c4c4c;
-          border-radius:5px;
+        .nav-item.active {
+            background-color: #4c4c4c;
+            border-radius: 5px;
         }
 
         .nav-item {
-          border-bottom: 2px solid #1c2023;
+            border-bottom: 2px solid #1c2023;
         }
 
+        /* Ensuring the chart container has a consistent size */
+        #sales_per_year {
+            width: 100%;
+            height: 400px;
+        }
     </style>
 </head>
 <body>
@@ -41,7 +46,7 @@
         <div class="row">
             <nav id="sidebar" class="col-md-3 col-lg-2 bg-dark d-md-block sidebar collapse">
                 <div class="fixed-top mt-4 ms-2" style="width:15vw">
-                  <h2 class="text-white">Ventas Xpress</h2>
+                    <h2 class="text-white">Ventas Xpress</h2>
                     <ul class="nav flex-column">
                         <li class="nav-item mt-4 active">
                             <a class="nav-link" aria-current="page" href="/">
@@ -66,84 +71,80 @@
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 <nav class="navbar navbar-expand-lg bg-body-tertiary d-lg-none">
                     <div class="container-fluid">
-                      <a class="navbar-brand" href="/">VentasXpress</a>
-                      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                      </button>
-                      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                          <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/">Vista general</a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="/pedidos">Pedidos</a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="/productos">Productos</a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="/clientes">Clientes</a>
-                          </li>
-                        </ul>
-                      </div>
+                        <a class="navbar-brand" href="/">VentasXpress</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="/">Vista general</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/pedidos">Pedidos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/productos">Productos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/clientes">Clientes</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                  </nav>
+                </nav>
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Vista General</h1>
                 </div>
-               
-                {% comment %} ================================================== {% endcomment %}
-                
-                  <div class="row">
+                <div class="row">
                     <div class="col-lg-4">
-                      <div class="row">
-                        <div class="col-lg-12">
-                          <div class="card p-4 mb-4" data-aos="fade-up">
-                            <h1>${{year_sales_total}}</h1>
-                            Ingresos Totales
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card p-4 mb-4" data-aos="fade-up">
+                                    <h1>${{year_sales_total}}</h1>
+                                    Ingresos Totales
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="card p-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                                    <h1>{{year_sales_amount}}</h1>
+                                    Cantidad de ventas
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="card p-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                                    <h1>{{avg_delivery_time}}hr</h1>
+                                    avg_delivery_time
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="card p-4" data-aos="fade-up" data-aos-delay="300">
+                                    <h1>${{avg_income_per_costumer}}</h1>
+                                    avg_income_per_costumer
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                        <div class="col-lg-12">
-                          <div class="card p-4 mb-4" data-aos="fade-up" data-aos-delay="100">
-                            <h1>{{year_sales_amount}}</h1>
-                            Cantidad de ventas
-                          </div>
-                        </div>
-                        <div class="col-lg-12">
-                          <div class="card p-4 mb-4" data-aos="fade-up" data-aos-delay="200">
-                          <h1>{{avg_delivery_time}}hr</h1>
-                          avg_delivery_time
-                        </div>
-                      </div>
-                        <div class="col-lg-12">
-                          <div class="card p-4" data-aos="fade-up" data-aos-delay="300">
-                          <h1>${{avg_income_per_costumer}}</h1>
-                          avg_income_per_costumer
-                        </div>
-                      </div>
-                      </div>
                     </div>
                     <div class="col-lg-8 mb-4">
-                      <div class="card p-5" data-aos="fade-up" data-aos-delay="100">
-                      {% comment %} {{sales_per_year}} {% endcomment %}
-                      <canvas id="sales_per_year"></canvas>
-                      </div>
+                        <div class="card p-5" data-aos="fade-up" data-aos-delay="100">
+                            {% comment %} {{sales_per_year}} {% endcomment %}
+                            <canvas id="sales_per_year"></canvas>
+                        </div>
                     </div>
-                  </div>
+                </div>
                 <div class="row">
-                  <div class="col-lg-4">
-                    <div class="card p-4" data-aos="fade-up" data-aos-delay="300">
-                    <h1>{{sales_amount_per_state}}</h1>
-                    sales_amount_per_state
-                  </div>
-                  </div>
-                  <div class="col-lg-8">
-                    <div class="card p-4" data-aos="fade-up" data-aos-delay="400">
-                    <h1>{{best_selling_products}}</h1>
-                    best_selling_products
-                  </div>
-
-                  </div>  
+                    <div class="col-lg-4">
+                        <div class="card p-4" data-aos="fade-up" data-aos-delay="300">
+                            <h1>{{sales_amount_per_state}}</h1>
+                            sales_amount_per_state
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="card p-4" data-aos="fade-up" data-aos-delay="400">
+                            <h1>{{best_selling_products}}</h1>
+                            best_selling_products
+                        </div>
+                    </div>
                 </div>
                 {% comment %} ======================================================= {% endcomment %}
             </main>
@@ -151,47 +152,49 @@
     </div>
     
     <script>
-      {% comment %} PRIMER GRÁFICO  {% endcomment %}
-      var ctx = document.getElementById('sales_per_year').getContext('2d');
-      var data = JSON.parse('{{ sales_per_year|safe }}'); // Asegúrate de pasar correctamente los datos JSON desde Django
-      
-      var years = data.map(function(item) {
-          return item['year'];
-      });
-      
-      var sales = data.map(function(item) {
-          return item['Sales'];
-      });
-      
-      var myChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-              labels: years,
-              datasets: [{
-                  label: 'Sales',
-                  data: sales,
-                  backgroundColor: 'darkblue',
-                  borderColor: 'darkblue',
-                  fill: false
-              }]
-          },
-          options: {
-              scales: {
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero: true
-                      }
-                  }]
-              }
-          }
-      });
-  </script>
+        {% comment %} PRIMER GRÁFICO  {% endcomment %}
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('sales_per_year').getContext('2d');
+            var data = JSON.parse('{{ sales_per_year|escapejs }}'); // Ensure data is correctly escaped and parsed
+        
+            var years = data.map(function(item) {
+                return item.year;
+            });
+        
+            var sales = data.map(function(item) {
+                return item.Sales;
+            });
+        
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Sales',
+                        data: sales,
+                        backgroundColor: 'darkblue',
+                        borderColor: 'darkblue',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         feather.replace();
         AOS.init();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  </body>
+</body>
 </html>

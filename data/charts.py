@@ -14,8 +14,8 @@ df['delivery'] = df['Ship Date'] - df['Order Date']
 # print("Cuarto:  Ingresos promedio por cliente")
 # print((df.groupby("Customer ID")['Sales'].mean()).reset_index()['Sales'])
 # ==================== VISTA GENERAL ==================================
-print("Primero:  monto de ventas en 2017")
-print(df[df['year'] == 2017]['Sales'].sum())
+# print("Primero:  monto de ventas en 2017")
+# print(df[df['year'] == 2017]['Sales'].sum())
 # df[df['year'] == 2017]['Sales'].sum()
 # print("Segundo: cantidad de ventas en 2017")
 # print(df[df['year'] == 2017]['Sales'].count())
@@ -35,11 +35,32 @@ print(df[df['year'] == 2017]['Sales'].sum())
 # ==================== PEDIDOS =====================================
 
 # print("Tiempo promedio de envio por Ship Mode BARCHART")
-# print(round(df.groupby('Ship Mode')['delivery'].mean()))
+# print(round(df.groupby('Ship Mode')['delivery'].mean()).reset_index())
+# avg_delivery_time_per_ship_mode = round(df.groupby('Ship Mode')['delivery'].mean().dt.total_seconds() / 3600 , 3).reset_index()
+# print(avg_delivery_time_per_ship_mode)
+# avg_delivery_time_per_ship_mode = avg_delivery_time_per_ship_mode.to_json(orient='records')
 
-# print('Tiempo de delivery x mes') 
+# print('avg_delivery_time_per_ship_mode = avg_delivery_time_per_ship_mode.to_json(orient='records')
 # print(round(df.groupby(["year","month"])['delivery'].mean().dt.total_seconds() / 3600,3))
 
+# Primero, agrupamos por 'year' y 'month' y calculamos el promedio de 'delivery' en horas
+average_delivery_hours = df.groupby(["year", "month"])['delivery'].mean().dt.total_seconds() / 3600
+
+# Convertimos el resultado a un DataFrame
+average_delivery_hours = average_delivery_hours.reset_index()
+
+# Creamos una nueva columna 'date' en el formato 'mes-año'
+average_delivery_hours['date'] = average_delivery_hours['month'].astype(str) + '-' + average_delivery_hours['year'].astype(str)
+
+# Seleccionamos solo las columnas 'date' y 'delivery'
+result_data = average_delivery_hours[['date', 'delivery']]
+
+# Renombramos la columna 'delivery' a 'average_delivery_hours'
+result_data.columns = ['date', 'average_delivery_hours']
+
+# Redondeamos los valores a 3 decimales
+result_data['average_delivery_hours'] = result_data['average_delivery_hours'].round(3)
+print(result_data)
 # print("alguna tabla, con las columnas que sean numero de orden, nombre del cliente, fecha de orden y tiempo de entrega.")
 
 # pedidos_table = df[['Order ID','Customer Name','Order Date','Ship Date','delivery']]

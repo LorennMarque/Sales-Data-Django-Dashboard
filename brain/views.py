@@ -175,9 +175,12 @@ def vista_general(request):
     avg_income_per_costumer = round(((df.groupby("Customer ID")['Sales'].sum()).reset_index()['Sales']).mean(),2)
 
     sales_amount_per_state = df.groupby('State')['Sales'].sum().reset_index().sort_values("Sales",ascending=False)
+    sales_amount_per_state = sales_amount_per_state.nlargest(10, 'Sales').reset_index(drop=True)
     sales_amount_per_state = sales_amount_per_state.to_json(orient='records')
 
+
     best_selling_products = df["Product Name"].value_counts().reset_index()
+    best_selling_products = best_selling_products.rename(columns={'Product Name': 'Product', 'Category': 'MainCategory', 'Sub-Category': 'Subcategory', 'Sales': 'Sales'})
     best_selling_products = best_selling_products.to_json(orient='records')
 
     # 3. Enviarla por context
@@ -234,18 +237,35 @@ def verify_data(request):
 # ==================== PEDIDOS =========================================
 def pedidos(request):
 
-    avg_delivery_time_per_ship_mode = round(df.groupby('Ship Mode')['delivery'].mean())
+    avg_delivery_time_per_ship_mode = round(df.groupby('Ship Mode')['delivery'].mean().dt.total_seconds() / 3600 , 3).reset_index()
     avg_delivery_time_per_ship_mode = avg_delivery_time_per_ship_mode.to_json(orient='records')
     
-    monthly_delivery_time = round(df.groupby(["year","month"])['delivery'].mean().dt.total_seconds() / 3600,3)
-    monthly_delivery_time = monthly_delivery_time.to_json(orient='records')
+    # Primero, agrupamos por 'year' y 'month' y calculamos el promedio de 'delivery' en horas
+    average_delivery_hours = df.groupby(["year", "month"])['delivery'].mean().dt.total_seconds() / 3600
+
+    # Convertimos el resultado a un DataFrame
+    average_delivery_hours = average_delivery_hours.reset_index()
+
+    # Creamos una nueva columna 'date' en el formato 'mes-año'
+    average_delivery_hours['date'] = average_delivery_hours['month'].astype(str) + '-' + average_delivery_hours['year'].astype(str)
+
+    # Seleccionamos solo las columnas 'date' y 'delivery'
+    result_data = average_delivery_hours[['date', 'delivery']]
+
+    # Renombramos la columna 'delivery' a 'average_delivery_hours'
+    result_data.columns = ['date', 'average_delivery_hours']
+
+    # Redondeamos los valores a 3 decimales
+    result_data['average_delivery_hours'] = result_data['average_delivery_hours'].round(3)
+    result_data = result_data.to_json(orient='records')
+
 
     orders = df[['Order ID','Customer Name','Order Date','Ship Date','delivery']]
     orders = orders.to_json(orient='records')
 
     context = {
         "avg_delivery_time_per_ship_mode": avg_delivery_time_per_ship_mode,
-        "monthly_delivery_time" : monthly_delivery_time,
+        "monthly_delivery_time" : result_data,
         "orders": orders
     }
     
@@ -254,19 +274,19 @@ def pedidos(request):
 
 # ==================== PRODUCTOS ======================================
 def productos(request):
-
+    # Suponiendo que 'df' es tu DataFrame ya cargado
     best_selling_sub_categories = df.groupby("Sub-Category")["Sales"].sum().reset_index().sort_values("Sales", ascending=False)
     best_selling_sub_categories = best_selling_sub_categories.to_json(orient='records')
     
-    products = df.groupby(['Product Name','Category','Sub-Category'])['Sales'].count().reset_index().sort_values("Sales",ascending=False)
-    products = products.to_json(orient='records')
+    products = df.groupby(['Product Name','Category','Sub-Category'])['Sales'].count().reset_index().sort_values("Sales", ascending=False)
+    products = products.rename(columns={'Product Name': 'Product', 'Category': 'MainCategory', 'Sub-Category': 'Subcategory', 'Sales': 'Sales'})
+    products = products.to_dict(orient='records')
 
     context = {
         "best_selling_sub_categories": best_selling_sub_categories,
         "productos": products
     }
     return render(request, 'productos.html', context)
-
 
 # ==================== CLIENTES ======================================
 def clientes(request):

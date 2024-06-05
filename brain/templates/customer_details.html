@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block section %}
+    <i data-feather="truck"></i> <a href="/customers" style="text-decoration:none;color:#8850F1;">Orders</a> / {{ customer.customer_name }}
+{% endblock %}
+{% block content %}
+        <h4 class="mb-4" data-aos="fade-zoom-in">Customer Details</h4>
+        <div class="card" data-aos="fade-zoom-in" data-aos-delay="100">
+            <div class="card-body">
+                <h2 class="card-title">{{ customer.customer_name }}</h2>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Customer ID:</strong> {{ customer.customer_id }}</li>
+                    <li class="list-group-item"><strong>Country:</strong> {{ customer.country }}</li>
+                    <li class="list-group-item"><strong>City:</strong> {{ customer.city }}</li>
+                    <li class="list-group-item"><strong>State:</strong> {{ customer.state }}</li>
+                    <li class="list-group-item"><strong>Postal Code:</strong> {{ customer.postal_code }}</li>
+                    <li class="list-group-item"><strong>Region:</strong> {{ customer.region }}</li>
+                </ul>
+            </div>
+    </div>
+{% endblock %}

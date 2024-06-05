@@ -4,11 +4,11 @@ import csv
 import pandas as pd
 import matplotlib.pyplot as plt
 from django.db.models import Sum, Count, Avg
-from brain.models import Sale
+from brain.models import Customer, Sale
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
 from django.core.serializers.json import DjangoJSONEncoder
-
+from django.shortcuts import render, get_object_or_404
 data = pd.read_csv("data/supermarket_sales.csv")
 
 df = data
@@ -302,39 +302,30 @@ def verify_data(request):
 
 # ==================== PEDIDOS =========================================
 def pedidos(request):
-
-    avg_delivery_time_per_ship_mode = round(df.groupby('Ship Mode')['delivery'].mean().dt.total_seconds() / 3600 , 3).reset_index()
+    avg_delivery_time_per_ship_mode = round(df.groupby('Ship Mode')['delivery'].mean().dt.total_seconds() / 3600, 3).reset_index()
     avg_delivery_time_per_ship_mode = avg_delivery_time_per_ship_mode.to_json(orient='records')
     
-    # Primero, agrupamos por 'year' y 'month' y calculamos el promedio de 'delivery' en horas
     average_delivery_hours = df.groupby(["year", "month"])['delivery'].mean().dt.total_seconds() / 3600
-
-    # Convertimos el resultado a un DataFrame
     average_delivery_hours = average_delivery_hours.reset_index()
-
-    # Creamos una nueva columna 'date' en el formato 'mes-año'
     average_delivery_hours['date'] = average_delivery_hours['month'].astype(str) + '-' + average_delivery_hours['year'].astype(str)
-
-    # Seleccionamos solo las columnas 'date' y 'delivery'
     result_data = average_delivery_hours[['date', 'delivery']]
-
-    # Renombramos la columna 'delivery' a 'average_delivery_hours'
     result_data.columns = ['date', 'average_delivery_hours']
-
-    # Redondeamos los valores a 3 decimales
     result_data['average_delivery_hours'] = result_data['average_delivery_hours'].round(3)
     result_data = result_data.to_json(orient='records')
 
+    orders = Sale.objects.all().order_by('-order_date')
 
-    orders = df[['Order ID','Customer Name','Order Date','Ship Date','delivery']]
-    orders = orders.to_json(orient='records')
+
+    # Paginación
+    paginator = Paginator(orders, 20)  # 10 registros por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
         "avg_delivery_time_per_ship_mode": avg_delivery_time_per_ship_mode,
-        "monthly_delivery_time" : result_data,
-        "orders": orders,
-        "active":2
-        
+        "monthly_delivery_time": result_data,
+        "page_obj": page_obj,  # Pasar el objeto de página a la plantilla
+        "active": 2
     }
     
     return render(request, 'pedidos.html', context)
@@ -358,23 +349,25 @@ def productos(request):
     return render(request, 'productos.html', context)
 
 # ==================== CLIENTES ======================================
-def clientes(request):
-    
+def show_all_customers(request):
     sales_per_city = df.groupby('City')['Sales'].sum().reset_index().sort_values("Sales",ascending=False)
+    sales_per_city = sales_per_city.nlargest(10, 'Sales').reset_index(drop=True)
     sales_per_city = sales_per_city.to_json(orient='records')
-    
-    most_valuable_customer = df.groupby(['Order ID', 'Customer Name'])['Sales'].sum().reset_index().sort_values("Sales",ascending=False)
-    most_valuable_customer = most_valuable_customer.to_json(orient='records')
 
-    customers = df.groupby(["Customer Name"]).agg(total_sales=("Sales","sum"), last_order =('Order Date', 'max')).reset_index().sort_values("total_sales",ascending = False)
-    customers = customers.to_json(orient='records')
-    
-    context = {
-        "sales_per_city" : sales_per_city,
-        "most_valuable_customer" : most_valuable_customer,
-        "customers" : customers,
+    customers_list = Customer.objects.all()
+    paginator = Paginator(customers_list, 20)  # Show 20 customers per page.
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'all_customers.html', {
+        'page_obj': page_obj,
+        'sales_per_city': sales_per_city,
         "active":4
-        
-    }
-    return render(request, 'clientes.html', context)
+        })
 
+def show_customer_details(request, customer_id):
+    customer = get_object_or_404(Customer, pk=customer_id)
+    orders = Sale.objects.filter(customer_id=customer_id)
+
+    return render(request, 'customer_details.html', {'customer': customer, 'orders': orders,"active":4 })

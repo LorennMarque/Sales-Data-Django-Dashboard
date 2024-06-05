@@ -6,10 +6,10 @@ urlpatterns = [
     # path('describe', views.data_describe, name='descriptions'),
     # path("nav", views.nav, name="nav"),
     path("", views.vista_general, name="inicio"),
-    path("pedidos", views.pedidos, name="pedidos"),
-    path("clientes", views.clientes, name="clientes"),
-    path("productos", views.productos, name="productos"),
+    path("orders", views.pedidos, name="pedidos"),
+    path("products", views.productos, name="productos"),
     path('verify-data/', views.verify_data, name='verify_data'),
+    path('customers/', views.show_all_customers, name='all_customers'),
+    path('customers/<int:customer_id>/', views.show_customer_details, name='customer_details'),
     path('content/', views.content, name='content')
-    
 ]

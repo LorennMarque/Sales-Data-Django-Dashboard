@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+{% block section %}<i data-feather="truck"></i> Orders {%endblock%}
+{% block content %}
+    <h4 data-aos="fade-zoom-in">Top 10 Most Selling Cities</h4>
+    <div class="card p-3 mb-3" style="height:750px"  data-aos="fade-zoom-in" data-aos-delay="100">
+        <canvas id="sales_per_city"></canvas>
+    </div>
+
+    <h4 data-aos="fade-zoom-in" data-aos-delay="100">All Customers</h4>
+    <div class="card p-2" data-aos="fade-zoom-in" data-aos-delay="200">
+    <table class="table table-striped mb-6" data-aos="fade-zoom-in" data-aos-delay="250">
+        <thead>
+            <tr>
+                <th>Customer ID</th>
+                <th>Customer Name</th>
+                <th>Country</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Postal Code</th>
+                <th>Region</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in page_obj %}
+                <tr>
+                    <td><a href="{% url 'customer_details' customer.id %}">{{ customer.customer_id }}</a></td>
+                    <td>{{ customer.customer_name }}</td>
+                    <td>{{ customer.country }}</td>
+                    <td>{{ customer.city }}</td>
+                    <td>{{ customer.state }}</td>
+                    <td>{{ customer.postal_code }}</td>
+                    <td>{{ customer.region }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+    {% if page_obj.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    <span class="current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+{%endblock%}
+
+{% block scripts %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var ctx = document.getElementById('sales_per_city').getContext('2d');
+        var data = JSON.parse('{{ sales_per_city|escapejs }}'); // Ensure data is correctly escaped and parsed
+        
+        var city = data.map(function(item) {
+            return item.City;
+        });
+    
+        var sales = data.map(function(item) {
+            return item.Sales;
+        });
+    
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: city,
+                datasets: [{
+                    label: 'Sales',
+                    data: sales,
+                    backgroundColor: '#8850F1',
+                    borderColor: '#8850F1',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'x',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14 // Ajusta el tamaño de la fuente para los labels en el eje Y
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Income (USD)',
+                            font: {
+                                size: 16 // Ajusta el tamaño de la fuente para el título del eje X
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14 // Ajusta el tamaño de la fuente para los labels en el eje X
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+{%endblock%}

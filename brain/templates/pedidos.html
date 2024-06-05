@@ -5,7 +5,7 @@
 <div class="row mb-3">
 
     <div class="col-lg-8">
-        <h4  data-aos="fade-zoom-in">Average Delivery Time per Month (in hrs)</h4>
+        <h4  data-aos="fade-zoom-in">Avg Delivery Time per Month (Hours)</h4>
         
         <div class="card p-3" style="height:55vh" data-aos="fade-zoom-in">
           {% comment %} {{monthly_delivery_time}}  {% endcomment %}
@@ -24,10 +24,51 @@
 
 </div>
 
-<h4 data-aos="fade-zoom-in" data-aos-delay="150">All Orders</h4>
+<h4 data-aos="fade-zoom-in" data-aos-delay="150">All orders</h4>
 <div class="card p-3" data-aos="fade-zoom-in" data-aos-delay="250">
-  {{orders}}
+    <table class="table table-striped mb-6">
+        <thead>
+            <tr>
+                <th>Order Number</th>
+                <th>Name</th>
+                <th>Order Date</th>
+                <th>Ship Date</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in page_obj %}
+            <tr>
+                <td>{{ order.order_id }}</td>
+                <td>{{ order.customer_name }}</td>
+                <td>{{ order.order_date }}</td>
+                <td>{{ order.ship_date }}</td>
+                <td>${{ order.sales }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div> 
+
+<!-- Agregar enlaces de paginación -->
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; First</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
 
 {% endblock %}  
 <!-- ############################################################################################### -->

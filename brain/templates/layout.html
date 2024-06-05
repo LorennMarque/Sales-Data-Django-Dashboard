@@ -61,8 +61,8 @@
 <div class="container-fluid">
   <div class="row">
       <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-          <div class="fixed-top mt-4 ms-2" style="width:14vw">
-            <h2>Ventas Xpress</h2>
+          <div class="fixed-top mt-4 ms-2 " style="width:14vw">
+           <a href="/" class="text-center" style="color:#545f75;"><h2 class="d-flex"><img style="border-radius:100%;height:42px;width:42px; margin-right:10px" src="https://andessoftware.com/logoventas.png"><span style="color:#8850F1;">Ventas</span>Xpress</h2></a>
               <ul class="nav flex-column">
                   <li class="nav-item mt-4 {% if active == 1 %}active{% endif %}">
                       <a class="nav-link {% if active == 1 %}text-white{% endif %}" aria-current="page" href="/">
@@ -70,15 +70,15 @@
                       </a>
                   </li>
                   <li class="nav-item {% if active == 2 %}active{% endif %}">
-                      <a class="nav-link {% if active == 2 %}text-white{% endif %}" href="/pedidos">
+                      <a class="nav-link {% if active == 2 %}text-white{% endif %}" href="/orders">
                         <i data-feather="truck"></i> Orders</a>
                   </li>
                   <li class="nav-item {% if active == 3 %}active{% endif %}">
-                      <a class="nav-link {% if active == 3 %}text-white{% endif %}" href="/productos">
+                      <a class="nav-link {% if active == 3 %}text-white{% endif %}" href="/products">
                         <i data-feather="package"></i> Products</a>
                   </li>
                   <li class="nav-item {% if active == 4 %}active{% endif %}" >
-                      <a class="nav-link {% if active == 4 %}text-white{% endif %}" aria-current="page" href="/clientes">
+                      <a class="nav-link {% if active == 4 %}text-white{% endif %}" aria-current="page" href="/customers">
                         <i data-feather="users"> </i> Customers</a>
                   </li>
               </ul>
@@ -97,13 +97,13 @@
                 <a class="nav-link active" aria-current="page" href="/">Overview</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/pedidos">Orders</a>
+                <a class="nav-link" href="/orders">Orders</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/productos">Products</a>
+                <a class="nav-link" href="/products">Products</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/clientes">Customers</a>
+                <a class="nav-link" href="/customers">Customers</a>
               </li>
             </ul>
           </div>

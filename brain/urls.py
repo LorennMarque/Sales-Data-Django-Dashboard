@@ -9,6 +9,7 @@ urlpatterns = [
     path("pedidos", views.pedidos, name="pedidos"),
     path("clientes", views.clientes, name="clientes"),
     path("productos", views.productos, name="productos"),
-    path('verify-data/', views.verify_data, name='verify_data')
+    path('verify-data/', views.verify_data, name='verify_data'),
+    path('content/', views.content, name='content')
     
 ]

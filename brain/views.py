@@ -156,11 +156,18 @@ def nav(request):
 
     return render(request, 'navegacion.html', context)
 
+def content(request):
+    context = {
+        "sales_per_year": "hola",
+    }
+
+    return render(request, 'content.html', context)
+
+
 
 
 # ==================== VISTA GENERAL ====================================
 def vista_general(request):
-
     sales_per_year = df.groupby('year')['Sales'].agg('sum').reset_index()  
     sales_per_year = sales_per_year.to_json(orient='records')
 
@@ -191,7 +198,8 @@ def vista_general(request):
         "avg_delivery_time" : avg_delivery_time,
         "avg_income_per_costumer" : avg_income_per_costumer,
         "sales_amount_per_state" : sales_amount_per_state,
-        "best_selling_products" : best_selling_products
+        "best_selling_products" : best_selling_products,
+        "active":1
     }
     return render(request, 'vista_general.html', context)
 
@@ -266,7 +274,9 @@ def pedidos(request):
     context = {
         "avg_delivery_time_per_ship_mode": avg_delivery_time_per_ship_mode,
         "monthly_delivery_time" : result_data,
-        "orders": orders
+        "orders": orders,
+        "active":2
+        
     }
     
     return render(request, 'pedidos.html', context)
@@ -284,7 +294,8 @@ def productos(request):
 
     context = {
         "best_selling_sub_categories": best_selling_sub_categories,
-        "productos": products
+        "productos": products,
+        "active": 3
     }
     return render(request, 'productos.html', context)
 
@@ -303,7 +314,8 @@ def clientes(request):
     context = {
         "sales_per_city" : sales_per_city,
         "most_valuable_customer" : most_valuable_customer,
-        "customers" : customers
+        "customers" : customers,
+        "active":4
         
     }
     return render(request, 'clientes.html', context)

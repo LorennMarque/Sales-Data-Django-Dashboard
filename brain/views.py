@@ -5,6 +5,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from django.db.models import Sum, Count, Avg
 from brain.models import Sale
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 data = pd.read_csv("data/supermarket_sales.csv")
 
@@ -186,20 +190,77 @@ def vista_general(request):
     sales_amount_per_state = sales_amount_per_state.to_json(orient='records')
 
 
-    best_selling_products = df["Product Name"].value_counts().reset_index()
-    best_selling_products = best_selling_products.rename(columns={'Product Name': 'Product', 'Category': 'MainCategory', 'Sub-Category': 'Subcategory', 'Sales': 'Sales'})
-    best_selling_products = best_selling_products.to_json(orient='records')
+    # results = int(request.GET.get('page', ''))
 
-    # 3. Enviarla por context
+    # # Realizar la consulta para contar las ventas por producto
+    # best_selling_products = (Sale.objects
+    #     .values('product_name', 'category', 'sub_category')
+    #     .annotate(sales_count=Count('product_name'))
+    #     .order_by('-sales_count')[:results])
+
+    # # Renombrar los campos según sea necesario, así es más facil de leer y convertir los resultados a una lista de diccionarios
+    # best_selling_products = [{
+    #     'Product': item['product_name'],
+    #     'MainCategory': item['category'],
+    #     'Subcategory': item['sub_category'],
+    #     'Sales': item['sales_count']
+    # } for item in best_selling_products]
+
+    # # Convertir la lista de diccionarios a JSON
+    # best_selling_products = json.dumps(best_selling_products, cls=DjangoJSONEncoder)
+
+        # Crear un paginador con 20 resultados por página
+
+    page_number = request.GET.get('page', 1)
+
+    best_selling_products_query = (Sale.objects
+        .values('product_name', 'category', 'sub_category')
+        .annotate(sales_count=Count('product_name'))
+        .order_by('-sales_count'))
+
+    paginator = Paginator(best_selling_products_query, 14)
+
+    try:
+        # Obtener la página solicitada
+        best_selling_products_page = paginator.page(page_number)
+    except PageNotAnInteger:
+        # Si el número de página no es un entero, mostrar la primera página
+        best_selling_products_page = paginator.page(1)
+    except EmptyPage:
+        # Si el número de página está fuera del rango, mostrar la última página
+        best_selling_products_page = paginator.page(paginator.num_pages)
+
+    # Formatear los resultados y convertirlos a una lista de diccionarios
+    best_selling_products_list = [{
+        'Product': item['product_name'],
+        'MainCategory': item['category'],
+        'Subcategory': item['sub_category'],
+        'Sales': item['sales_count']
+    } for item in best_selling_products_page]
+
+    page_number = int(page_number)
+    if page_number <= 3:
+        pages = [1,2,3,4,5]
+    elif page_number <= paginator.num_pages - 4:
+        pages = [page_number-2,page_number-1,page_number,page_number+1,page_number+2]
+    else:
+        pages = [paginator.num_pages-4,paginator.num_pages-3,paginator.num_pages-2,paginator.num_pages-1,paginator.num_pages]
+
     context = {
         "sales_per_year": sales_per_year,
         "year_sales_total": year_sales_total,
-        "year_sales_amount" : year_sales_amount,
-        "avg_delivery_time" : avg_delivery_time,
-        "avg_income_per_costumer" : avg_income_per_costumer,
-        "sales_amount_per_state" : sales_amount_per_state,
-        "best_selling_products" : best_selling_products,
-        "active":1
+        "year_sales_amount": year_sales_amount,
+        "avg_delivery_time": avg_delivery_time,
+        "avg_income_per_costumer": avg_income_per_costumer,
+        "sales_amount_per_state": sales_amount_per_state,
+        "best_selling_products": best_selling_products_list,  # Pass the list directly
+        "pagination":  {
+            "first_page":1,
+            "last_page":paginator.num_pages,
+            "active_page":page_number,
+            "pages":pages
+        },
+        "active": 1
     }
     return render(request, 'vista_general.html', context)
 

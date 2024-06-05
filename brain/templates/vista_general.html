@@ -3,52 +3,94 @@
 {% block section %} Vista general {%endblock%}
 {% block content %}
                 <div class="row">
-                    <div class="col-lg-4">
+                    <div class="col-lg-5">
                         <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card p-4 mb-2" >
-                                    <h1>${{year_sales_total}}</h1>
-                                    Ingresos Totales
+                            <div class="col-lg-6 ">
+                                <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in">
+                                    <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                        <i data-feather="dollar-sign" stroke="#212529"></i>
+                                    </div>
+                                    <p class="text-muted mt-2" style="font-size:12px;">Total Income</p>
+                                    <h3>${{year_sales_total}}</h3>
                                 </div>
                             </div>
-                            <div class="col-lg-12">
-                                <div class="card p-4 mb-2" >
-                                    <h1>{{year_sales_amount}}</h1>
-                                    Cantidad de ventas
+                            <div class="col-lg-6">
+                                <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="100">
+                                    <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                        <i data-feather="package" stroke="#212529"></i>
+                                    </div>
+                                    <p class="text-muted mt-2" style="font-size:12px;">Sales Count</p>
+                                    <h3 style="margin:0px;">{{year_sales_amount}} Sales</h3>
                                 </div>
                             </div>
-                            <div class="col-lg-12">
-                                <div class="card p-4 mb-2" >
-                                    <h1>{{avg_delivery_time}}hr</h1>
-                                    Tiempo promedio de delivery (Entrega)
+                            <div class="col-lg-6" style="margin-top:25px">
+                                <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="200">
+                                    <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                        <i data-feather="clock" stroke="#212529"></i>
+                                    </div>
+                                    <p class="text-muted mt-2" style="font-size:12px;">Avg Time of Delivery</p>
+                                    <h3>{{avg_delivery_time}} hrs</h3>
                                 </div>
                             </div>
-                            <div class="col-lg-12">
-                                <div class="card p-4" >
-                                    <h1>${{avg_income_per_costumer}}</h1>
-                                    avg_income_per_costumer
+                            <div class="col-lg-6" style="margin-top:25px">
+                                <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="300">
+                                    <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                        <i data-feather="user" stroke="#212529"></i>
+                                    </div>
+                                    <p class="text-muted mt-2" style="font-size:12px;">Avg Income per Costumer</p>
+                                    <h3>${{avg_income_per_costumer}}</h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-8 mb-4">
-                        <div class="card p-5" >
+                    <div class="col-lg-7 mb-4">
+                        <div class="card p-3" style="height:420px" data-aos="fade-zoom-in" data-aos-delay="200">
                             {% comment %} {{sales_per_year}} {% endcomment %}
+
                             <canvas id="sales_per_year"></canvas>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4 ">
-                        <div class="card p-4" style="height:600px">
+                <div class="row mb-3">
+                    <div class="col-lg-5">
+                        <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="400">
                             {% comment %} <h1>{{sales_amount_per_state}}</h1> {% endcomment %}
                             Sales Amount per State
                             <canvas id="sales_amount_per_state"></canvas>
                         </div>
                     </div>
-                    <div class="col-lg-8">
-                        <div class="card p-4"> 
-                            {{best_selling_products}}
+                    <div class="col-lg-7">
+                        <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="500"> 
+                            <table class="table table-striped mb-6">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Main Category</th>
+                                        {% comment %} <th>Subcategory</th> {% endcomment %}
+                                        <th>Sales</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for producto in best_selling_products %}
+                                    <tr>
+                                        <td>{{ producto.Product|truncatechars:50 }}</td>
+                                        <td>{{ producto.MainCategory }}</td>
+                                        {% comment %} <td>{{ producto.Subcategory }}</td> {% endcomment %}
+                                        <td>{{ producto.Sales }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item"><a class="page-link" href="http://127.0.0.1:8000/?page={{pagination.first_page}}">First</a></li>
+                                    {% for page in pagination.pages %}
+                                    <li class="page-item"><a class="page-link {% if page == pagination.active_page %}active{% endif %}" href="http://127.0.0.1:8000/?page={{page}}">{{page}}</a></li>
+                                    {% endfor %}
+                                    <li class="page-item"><a class="page-link" href="http://127.0.0.1:8000/?page={{pagination.last_page}}">Last</a></li>
+                                </ul>
+                              </nav>
+                              
                         </div>
                     </div>
                 </div>
@@ -76,8 +118,8 @@
                     datasets: [{
                         label: 'Sales',
                         data: sales,
-                        backgroundColor: 'darkblue',
-                        borderColor: 'darkblue',
+                        backgroundColor: '#8850F1',
+                        borderColor: '#8850F1',
                         borderWidth: 1
                     }]
                 },
@@ -113,8 +155,8 @@
                     datasets: [{
                         label: 'Sales',
                         data: sales,
-                        backgroundColor: 'darkblue',
-                        borderColor: 'darkblue',
+                        backgroundColor: '#8850F1',
+                        borderColor: '#8850F1',
                         borderWidth: 1
                     }]
                 },

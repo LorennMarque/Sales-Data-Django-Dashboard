@@ -1,12 +1,14 @@
 {% extends "layout.html" %}
 
-{% block section %} Vista general {%endblock%}
+{% block section %} 
+<i data-feather="home"></i> Overview {%endblock%}
 {% block content %}
                 <div class="row">
                     <div class="col-lg-5">
+                        <h4 data-aos="fade-zoom-in" >Overall Performance</h4>
                         <div class="row">
                             <div class="col-lg-6 ">
-                                <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in">
+                                <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="100">
                                     <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                         <i data-feather="dollar-sign" stroke="#212529"></i>
                                     </div>
@@ -17,7 +19,7 @@
                             <div class="col-lg-6">
                                 <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="100">
                                     <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                        <i data-feather="package" stroke="#212529"></i>
+                                        <i data-feather="shopping-cart" stroke="#212529"></i>
                                     </div>
                                     <p class="text-muted mt-2" style="font-size:12px;">Sales Count</p>
                                     <h3 style="margin:0px;">{{year_sales_amount}} Sales</h3>
@@ -29,7 +31,7 @@
                                         <i data-feather="clock" stroke="#212529"></i>
                                     </div>
                                     <p class="text-muted mt-2" style="font-size:12px;">Avg Time of Delivery</p>
-                                    <h3>{{avg_delivery_time}} hrs</h3>
+                                    <h3>{{avg_delivery_time}} Hrs</h3>
                                 </div>
                             </div>
                             <div class="col-lg-6" style="margin-top:25px">
@@ -44,6 +46,7 @@
                         </div>
                     </div>
                     <div class="col-lg-7 mb-4">
+                        <h4 data-aos="fade-zoom-in" data-aos-delay="150">Yearly Income</h4>
                         <div class="card p-3" style="height:420px" data-aos="fade-zoom-in" data-aos-delay="200">
                             {% comment %} {{sales_per_year}} {% endcomment %}
 
@@ -53,14 +56,15 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-lg-5">
-                        <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="400">
+                        <h4 data-aos="fade-zoom-in" data-aos-delay="400">Sales Amount per State</h4>
+                        <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="450">
                             {% comment %} <h1>{{sales_amount_per_state}}</h1> {% endcomment %}
-                            Sales Amount per State
                             <canvas id="sales_amount_per_state"></canvas>
                         </div>
                     </div>
                     <div class="col-lg-7">
-                        <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="500"> 
+                        <h4 data-aos="fade-zoom-in" data-aos-delay="500">All Products</h4>
+                        <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="550"> 
                             <table class="table table-striped mb-6">
                                 <thead>
                                     <tr>
@@ -97,80 +101,129 @@
                 {% comment %} ======================================================= {% endcomment %}
                 {% endblock %}
 {% block scripts %}
-    <script>
-        {% comment %} PRIMER GRÁFICO  {% endcomment %}
-        document.addEventListener('DOMContentLoaded', function() {
-            var ctx = document.getElementById('sales_per_year').getContext('2d');
-            var data = JSON.parse('{{ sales_per_year|escapejs }}'); // Ensure data is correctly escaped and parsed
-        
-            var years = data.map(function(item) {
-                return item.year;
-            });
-        
-            var sales = data.map(function(item) {
-                return item.Sales;
-            });
-        
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: years,
-                    datasets: [{
-                        label: 'Sales',
-                        data: sales,
-                        backgroundColor: '#8850F1',
-                        borderColor: '#8850F1',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var ctx = document.getElementById('sales_per_year').getContext('2d');
+        var data = JSON.parse('{{ sales_per_year|escapejs }}'); // Ensure data is correctly escaped and parsed
+    
+        var years = data.map(function(item) {
+            return item.year;
+        });
+    
+        var sales = data.map(function(item) {
+            return item.Sales;
+        });
+    
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: years,
+                datasets: [{
+                    label: 'Sales',
+                    data: sales,
+                    backgroundColor: '#8850F1',
+                    borderColor: '#8850F1',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Income (USD)',
+                            font: {
+                                size: 16 // Ajusta el tamaño de la fuente para el título del eje Y
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14 // Ajusta el tamaño de la fuente para los labels en el eje Y
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Years',
+                            font: {
+                                size: 16 // Ajusta el tamaño de la fuente para el título del eje X
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14 // Ajusta el tamaño de la fuente para los labels en el eje X
+                            }
                         }
                     }
                 }
-            });
+            }
         });
-    </script>
-    <script>
-        {% comment %} SEGUNDO GRÁFICO  {% endcomment %}
-        document.addEventListener('DOMContentLoaded', function() {
-            var ctx = document.getElementById('sales_amount_per_state').getContext('2d');
-            var data = JSON.parse('{{ sales_amount_per_state|escapejs }}'); // Ensure data is correctly escaped and parsed
-            var state = data.map(function(item) {
-                return item.State;
-            });
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var ctx = document.getElementById('sales_amount_per_state').getContext('2d');
+        var data = JSON.parse('{{ sales_amount_per_state|escapejs }}'); // Ensure data is correctly escaped and parsed
         
-            var sales = data.map(function(item) {
-                return item.Sales;
-            });
-        
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: state,
-                    datasets: [{
-                        label: 'Sales',
-                        data: sales,
-                        backgroundColor: '#8850F1',
-                        borderColor: '#8850F1',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
+        var state = data.map(function(item) {
+            return item.State;
+        });
+    
+        var sales = data.map(function(item) {
+            return item.Sales;
+        });
+    
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: state,
+                datasets: [{
+                    label: 'Sales',
+                    data: sales,
+                    backgroundColor: '#8850F1',
+                    borderColor: '#8850F1',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14 // Ajusta el tamaño de la fuente para los labels en el eje Y
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Income (USD)',
+                            font: {
+                                size: 16 // Ajusta el tamaño de la fuente para el título del eje X
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14 // Ajusta el tamaño de la fuente para los labels en el eje X
+                            }
                         }
                     }
                 }
-            });
+            }
         });
-    </script>
+    });
+</script>
+
+
+
     {% endblock %}

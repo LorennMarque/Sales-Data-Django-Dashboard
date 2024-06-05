@@ -8,7 +8,6 @@ from brain.models import Sale
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
 from django.core.serializers.json import DjangoJSONEncoder
-import json
 
 data = pd.read_csv("data/supermarket_sales.csv")
 
@@ -176,16 +175,14 @@ def vista_general(request):
     sales_per_year = sales_per_year.to_json(orient='records')
 
     # 1. Guardar una variable con los datos
-    year_sales_total = round(df['Sales'].sum(),2)
-    # year_sales_total = df[df['year'] == 2017]['Sales'].sum()
-    year_sales_total = f"{int(year_sales_total):,}".replace(",", ".") + "," + str(year_sales_total).split('.')[1]
+    year_sales_total =  "{:,.2f}".format(round(df['Sales'].sum(), 2))
     year_sales_amount = df[df['year'] == 2017]['Sales'].count()
     
-    avg_delivery_time = round((df['delivery'].dt.total_seconds() / 3600).mean(),2)
+    avg_delivery_time = int((df['delivery'].dt.total_seconds() / 3600).mean())
 
-    avg_income_per_costumer = round(((df.groupby("Customer ID")['Sales'].sum()).reset_index()['Sales']).mean(),2)
+    avg_income_per_customer = round(((df.groupby("Customer ID")['Sales'].sum()).reset_index()['Sales']).mean(), 2)
 
-    sales_amount_per_state = df.groupby('State')['Sales'].sum().reset_index().sort_values("Sales",ascending=False)
+    sales_amount_per_state = df.groupby('State')['Sales'].sum().reset_index().sort_values("Sales", ascending=False)
     sales_amount_per_state = sales_amount_per_state.nlargest(10, 'Sales').reset_index(drop=True)
     sales_amount_per_state = sales_amount_per_state.to_json(orient='records')
 
@@ -251,7 +248,7 @@ def vista_general(request):
         "year_sales_total": year_sales_total,
         "year_sales_amount": year_sales_amount,
         "avg_delivery_time": avg_delivery_time,
-        "avg_income_per_costumer": avg_income_per_costumer,
+        "avg_income_per_costumer": avg_income_per_customer,
         "sales_amount_per_state": sales_amount_per_state,
         "best_selling_products": best_selling_products_list,  # Pass the list directly
         "pagination":  {

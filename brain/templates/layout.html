@@ -66,20 +66,20 @@
               <ul class="nav flex-column">
                   <li class="nav-item mt-4 {% if active == 1 %}active{% endif %}">
                       <a class="nav-link {% if active == 1 %}text-white{% endif %}" aria-current="page" href="/">
-                        <i data-feather="home"></i> Vista general
+                        <i data-feather="home"></i> Overview
                       </a>
                   </li>
                   <li class="nav-item {% if active == 2 %}active{% endif %}">
                       <a class="nav-link {% if active == 2 %}text-white{% endif %}" href="/pedidos">
-                        <i data-feather="truck"></i> Pedidos</a>
+                        <i data-feather="truck"></i> Orders</a>
                   </li>
                   <li class="nav-item {% if active == 3 %}active{% endif %}">
                       <a class="nav-link {% if active == 3 %}text-white{% endif %}" href="/productos">
-                        <i data-feather="package"></i> Productos</a>
+                        <i data-feather="package"></i> Products</a>
                   </li>
                   <li class="nav-item {% if active == 4 %}active{% endif %}" >
                       <a class="nav-link {% if active == 4 %}text-white{% endif %}" aria-current="page" href="/clientes">
-                        <i data-feather="users"> </i> Clientes</a>
+                        <i data-feather="users"> </i> Customers</a>
                   </li>
               </ul>
           </div>
@@ -94,16 +94,16 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/">Vista general</a>
+                <a class="nav-link active" aria-current="page" href="/">Overview</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/pedidos">Pedidos</a>
+                <a class="nav-link" href="/pedidos">Orders</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/productos">Productos</a>
+                <a class="nav-link" href="/productos">Products</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/clientes">Clientes</a>
+                <a class="nav-link" href="/clientes">Customers</a>
               </li>
             </ul>
           </div>
@@ -115,7 +115,6 @@
     <div style="margin:25px">
   {% block content %}{% endblock %}
 </div>
-
   </main>
 </div>
 </div>

@@ -1,16 +1,14 @@
 {% extends "layout.html" %}
-
-{% block section %} Productos {%endblock%}
-
-
+{% block section %} <i data-feather="package"></i> Products {%endblock%}
 {% block content %}
 
-<div class="card p-5 mb-2" style="height:650px">
+<h4 data-aos="fade-zoom-in">Best Selling Sub Categories</h4>
+<div class="card p-5 mb-2" style="height:650px" data-aos="fade-zoom-in" data-aos-delay="100">
   {% comment %} <h1>{{best_selling_sub_categories}}</h1> {% endcomment %}
-  Best Selling Sub Categories
   <canvas  id="best_selling_sub_categories"></canvas>
 </div> 
-<div class="card p-5 mb-2">
+<h4 data-aos="fade-zoom-in" data-aos="fade-zoom-in" data-aos-delay="250">All Products</h4>
+<div class="card p-5 mb-2" data-aos="fade-zoom-in" data-aos-delay="250">
 <table class="table table-striped">
   <thead>
     <tr>
@@ -40,42 +38,52 @@
 
 {% block scripts %}
 
-    <script>
-      {% comment %} PRIMER GRÁFICO  {% endcomment %}
-      document.addEventListener('DOMContentLoaded', function() {
-          var ctx = document.getElementById('best_selling_sub_categories').getContext('2d');
-          var data = JSON.parse('{{best_selling_sub_categories|escapejs }}'); // Ensure data is correctly escaped and parsed
-      
-          var subcategory = data.map(function(item) {
-              return item["Sub-Category"] ;
-          });
-      
-          var sales = data.map(function(item) {
-              return item.Sales;
-          });
-           
-          var myChart = new Chart(ctx, {
-              type: 'bar',
-              data: {
-                  labels: subcategory,
-                  datasets: [{
-                      label: 'Sales',
-                      data: sales,
-                      backgroundColor: 'darkblue',
-                      borderColor: 'darkblue',
-                      borderWidth: 1
-                  }]
-              },
-              options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  scales: {
-                      y: {
-                          beginAtZero: true
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var ctx = document.getElementById('best_selling_sub_categories').getContext('2d');
+      var data = JSON.parse('{{ best_selling_sub_categories|escapejs }}'); // Ensure data is correctly escaped and parsed
+  
+      var subcategory = data.map(function(item) {
+          return item["Sub-Category"];
+      });
+  
+      var sales = data.map(function(item) {
+          return item.Sales;
+      });
+  
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: subcategory,
+              datasets: [{
+                  label: 'Sales',
+                  data: sales,
+                  backgroundColor: '#8850F1',
+                  borderColor: '#8850F1',
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  y: {
+                      beginAtZero: true,
+                      title: {
+                          display: true,
+                          text: 'Income (USD)'
+                      }
+                  },
+                  x: {
+                      title: {
+                          display: true,
+                          text: 'Sub-Category'
                       }
                   }
               }
-          });
+          }
       });
-  </script>
+  });
+</script>
+
 {% endblock %}

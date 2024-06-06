@@ -4,44 +4,52 @@
 
 <h4 data-aos="fade-zoom-in">Best Selling Sub Categories</h4>
 <div class="card p-1 mb-2" style="height:650px" data-aos="fade-zoom-in" data-aos-delay="100">
-  {% comment %} <h1>{{best_selling_sub_categories}}</h1> {% endcomment %}
   <canvas  id="best_selling_sub_categories"></canvas>
-</div> 
-<h4 data-aos="fade-zoom-in" data-aos="fade-zoom-in" data-aos-delay="250">All Products</h4>
-<div class="card p-3 mb-2" data-aos="fade-zoom-in" data-aos-delay="250">
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">Products</th>
-      <th scope="col">Main Category</th>
-      <th scope="col">Sub Category</th>
-      <th scope="col">Amount of Sales</th>
-    </tr>
-  </thead>
-  <tbody>
-    {%for producto in productos%}
-    {% comment %} {'Product': 'Staple envelope', 'MainCategory': 'Office Supplies', 'Subcategory': 'Envelopes', 'Sales': 47} {% endcomment %}
-    <tr>
-      <td>{{ producto.Product}}</td>
-      <td>{{producto.MainCategory}}</td>
-      <td>{{producto.Subcategory}}</td>
-      <td>{{producto.Sales}}</td>
-    </tr>
-    {%endfor%}
-  </tbody>
-</table>
-  {% comment %} <h1>{{productos}}</h1> {% endcomment %}
-    {% comment %} <canvas  id="best_selling_sub_categories"></canvas> {% endcomment %}
-</div>            
-{% endblock %}
+  </div> 
 
+{% comment %} <h4 data-aos="fade-zoom-in">Best Selling Products <span class="text-muted">(All time)</span></h4> {% endcomment %}
+  <h4 data-aos="fade-zoom-in" data-aos-delay="500">All Products</h4>
+  <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="200"> 
+    <table class="table table-striped mb-6">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Main Category</th>
+          {% comment %} <th>Subcategory</th> {% endcomment %}
+          <th>Sales</th>
+          </tr>
+          </thead>
+          <tbody>
+            {% for producto in best_selling_products %}
+            <tr>
+              <td>{{ producto.Product|truncatechars:60 }}</td>
+              <td>{{ producto.MainCategory }}</td>
+              {% comment %} <td>{{ producto.Subcategory }}</td> {% endcomment %}
+              <td>{{ producto.Sales }}</td>
+              </tr>
+              {% endfor %}
+              </tbody>
+              </table>
+              <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                  <li class="page-item"><a class="page-link" href="http://127.0.0.1:8000/products?page={{pagination.first_page}}">First</a></li>
+                  {% for page in pagination.pages %}
+                  <li class="page-item"><a class="page-link {% if page == pagination.active_page %}active{% endif %}" href="http://127.0.0.1:8000/products?page={{page}}">{{page}}</a></li>
+                  {% endfor %}
+                  <li class="page-item"><a class="page-link" href="http://127.0.0.1:8000/products?page={{pagination.last_page}}">Last</a></li>
+                  </ul>
+                  </nav>
+                  </div>
+</div>           
+
+{% endblock %}
 
 {% block scripts %}
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
       var ctx = document.getElementById('best_selling_sub_categories').getContext('2d');
-      var data = JSON.parse('{{ best_selling_sub_categories|escapejs }}'); // Ensure data is correctly escaped and parsed
+      var data = JSON.parse('{{ best_selling_sub_categories|escapejs }}'); 
   
       var subcategory = data.map(function(item) {
           return item["Sub-Category"];
@@ -71,7 +79,7 @@
                       beginAtZero: true,
                       title: {
                           display: true,
-                          text: 'Income (USD)'
+                          text: 'Revenue (USD)'
                       }
                   },
                   x: {

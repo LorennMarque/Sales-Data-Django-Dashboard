@@ -12,7 +12,7 @@
                                     <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                         <i data-feather="dollar-sign" stroke="#212529"></i>
                                     </div>
-                                    <p class="text-muted mt-2" style="font-size:12px;">Total Income</p>
+                                    <p class="text-muted mt-2" style="font-size:12px;">Total Revenue</p>
                                     <h3>${{year_sales_total}}</h3>
                                 </div>
                             </div>
@@ -39,14 +39,14 @@
                                     <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                         <i data-feather="user" stroke="#212529"></i>
                                     </div>
-                                    <p class="text-muted mt-2" style="font-size:12px;">Avg Income per Costumer</p>
+                                    <p class="text-muted mt-2" style="font-size:12px;">Avg Revenue per Costumer</p>
                                     <h3>${{avg_income_per_costumer}}</h3>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-7 mb-4">
-                        <h4 data-aos="fade-zoom-in" data-aos-delay="150">Yearly Income</h4>
+                        <h4 data-aos="fade-zoom-in" data-aos-delay="150">Yearly Revenue</h4>
                         <div class="card p-3" style="height:420px" data-aos="fade-zoom-in" data-aos-delay="200">
                             {% comment %} {{sales_per_year}} {% endcomment %}
 
@@ -98,6 +98,7 @@
                         </div>
                     </div>
                 </div>
+
                 {% comment %} ======================================================= {% endcomment %}
                 {% endblock %}
 {% block scripts %}
@@ -134,7 +135,7 @@
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Income (USD)',
+                            text: 'Revenue (USD)',
                             font: {
                                 size: 16 // Ajusta el tamaño de la fuente para el título del eje Y
                             }
@@ -207,7 +208,7 @@
                     x: {
                         title: {
                             display: true,
-                            text: 'Income (USD)',
+                            text: 'Revenue (USD)',
                             font: {
                                 size: 16 // Ajusta el tamaño de la fuente para el título del eje X
                             }

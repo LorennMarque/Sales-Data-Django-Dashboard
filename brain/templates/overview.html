@@ -1,17 +1,11 @@
 {% extends "layout.html" %}
 
+{% block title %}Overview{% endblock %}
+
 {% block section %} 
 <i data-feather="home"></i> Overview {%endblock%}
 {% block content %}
-            <div class="d-flex">
-                <h4 data-aos="fade-zoom-in" >Historic Monthly Revenue</h4>
-                <div class="ms-auto">
-                    <button class="toggleButtons" onclick="toggleDataset('2015')">Ocultar 2015</button>
-                    <button class="toggleButtons" onclick="toggleDataset('2016')">Ocultar 2016</button>
-                    <button class="toggleButtons" onclick="toggleDataset('2017')">Ocultar 2017</button>
-                    <button class="toggleButtons" onclick="toggleDataset('2018')">Ocultar 2018</button>
-                </div>
-            </div>
+            <h4 data-aos="fade-zoom-in" >Historic Monthly Revenue</h4>
             <div class="card" style="height:400px" data-aos="fade-zoom-in" data-aos-delay="100">
                 <canvas id="monthly_sales"></canvas>
             </div>
@@ -60,8 +54,6 @@
                     <div class="col-lg-7 mb-4">
                         <h4 data-aos="fade-zoom-in" data-aos-delay="150">Yearly Revenue</h4>
                         <div class="card p-3" style="height:420px" data-aos="fade-zoom-in" data-aos-delay="200">
-                            {% comment %} {{sales_per_year}} {% endcomment %}
-
                             <canvas id="sales_per_year"></canvas>
                         </div>
                     </div>
@@ -70,43 +62,28 @@
                     <div class="col-lg-5">
                         <h4 data-aos="fade-zoom-in" data-aos-delay="400">Revenue per State</h4>
                         <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="450">
-                            {% comment %} <h1>{{sales_amount_per_state}}</h1> {% endcomment %}
                             <canvas id="sales_amount_per_state"></canvas>
                         </div>
                     </div>
                     <div class="col-lg-7">
-                        <h4 data-aos="fade-zoom-in" data-aos-delay="500">All Products</h4>
+                        <h4 data-aos="fade-zoom-in" data-aos-delay="500">Products with Highest Revenue</h4>
                         <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="550"> 
                             <table class="table table-striped mb-6">
                                 <thead>
                                     <tr>
                                         <th>Product</th>
-                                        <th>Main Category</th>
-                                        {% comment %} <th>Subcategory</th> {% endcomment %}
-                                        <th>Sales</th>
+                                        <th>Units Sold</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for producto in best_selling_products %}
+                                    {% for producto in best_products %}
                                     <tr>
-                                        <td>{{ producto.Product|truncatechars:50 }}</td>
-                                        <td>{{ producto.MainCategory }}</td>
-                                        {% comment %} <td>{{ producto.Subcategory }}</td> {% endcomment %}
-                                        <td>{{ producto.Sales }}</td>
+                                        <td>{{ producto.product}}</td>
+                                        <td>{{ producto.sales|floatformat:1 }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination">
-                                    <li class="page-item"><a class="page-link" href="http://127.0.0.1:8000/?page={{pagination.first_page}}">First</a></li>
-                                    {% for page in pagination.pages %}
-                                    <li class="page-item"><a class="page-link {% if page == pagination.active_page %}active{% endif %}" href="http://127.0.0.1:8000/?page={{page}}">{{page}}</a></li>
-                                    {% endfor %}
-                                    <li class="page-item"><a class="page-link" href="http://127.0.0.1:8000/?page={{pagination.last_page}}">Last</a></li>
-                                </ul>
-                              </nav>
-                              
                         </div>
                     </div>
                 </div>
@@ -117,7 +94,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var ctx = document.getElementById('sales_per_year').getContext('2d');
-        var data = JSON.parse('{{ sales_per_year|escapejs }}'); // Ensure data is correctly escaped and parsed
+        var data = JSON.parse('{{ sales_per_year|escapejs }}'); 
     
         var years = data.map(function(item) {
             return item.year;
@@ -149,12 +126,12 @@
                             display: true,
                             text: 'Revenue (USD)',
                             font: {
-                                size: 16 // Ajusta el tamaño de la fuente para el título del eje Y
+                                size: 16 
                             }
                         },
                         ticks: {
                             font: {
-                                size: 14 // Ajusta el tamaño de la fuente para los labels en el eje Y
+                                size: 14 
                             }
                         }
                     },
@@ -163,12 +140,12 @@
                             display: true,
                             text: 'Years',
                             font: {
-                                size: 16 // Ajusta el tamaño de la fuente para el título del eje X
+                                size: 16
                             }
                         },
                         ticks: {
                             font: {
-                                size: 14 // Ajusta el tamaño de la fuente para los labels en el eje X
+                                size: 14
                             }
                         }
                     }
@@ -182,8 +159,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var ctx = document.getElementById('sales_amount_per_state').getContext('2d');
-        var data = JSON.parse('{{ sales_amount_per_state|escapejs }}'); // Ensure data is correctly escaped and parsed
-        
+        var data = JSON.parse('{{ sales_amount_per_state|escapejs }}');
         var state = data.map(function(item) {
             return item.State;
         });
@@ -213,7 +189,7 @@
                         beginAtZero: true,
                         ticks: {
                             font: {
-                                size: 14 // Ajusta el tamaño de la fuente para los labels en el eje Y
+                                size: 14 
                             }
                         }
                     },
@@ -222,12 +198,12 @@
                             display: true,
                             text: 'Revenue (USD)',
                             font: {
-                                size: 16 // Ajusta el tamaño de la fuente para el título del eje X
+                                size: 16 
                             }
                         },
                         ticks: {
                             font: {
-                                size: 14 // Ajusta el tamaño de la fuente para los labels en el eje X
+                                size: 14
                             }
                         }
                     }
@@ -245,38 +221,36 @@
         var data_2017 = JSON.parse('{{ monthly_sales_2017|safe }}');
         var data_2018 = JSON.parse('{{ monthly_sales_2018|safe }}');
 
-        var ship_mode_2015 = data_2015.map(function(item) {
-            return item['month'];
-        });
-        var delivery_2015 = data_2015.map(function(item) {
-            return item['Sales'];
-        });
+        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-        var ship_mode_2016 = data_2016.map(function(item) {
-            return item['month'];
-        });
-        var delivery_2016 = data_2016.map(function(item) {
-            return item['Sales'];
-        });
+        function mapDataToMonths(data) {
+            return data.map(function(item) {
+                return months[item['month'] - 1]; 
+            });
+        }
 
-        var ship_mode_2017 = data_2017.map(function(item) {
-            return item['month'];
-        });
-        var delivery_2017 = data_2017.map(function(item) {
-            return item['Sales'];
-        });
+        function mapDataToSales(data) {
+            return data.map(function(item) {
+                return item['Sales'];
+            });
+        }
 
-        var ship_mode_2018 = data_2018.map(function(item) {
-            return item['month'];
-        });
-        var delivery_2018 = data_2018.map(function(item) {
-            return item['Sales'];
-        });
+        var ship_mode_2015 = mapDataToMonths(data_2015);
+        var delivery_2015 = mapDataToSales(data_2015);
+
+        var ship_mode_2016 = mapDataToMonths(data_2016);
+        var delivery_2016 = mapDataToSales(data_2016);
+
+        var ship_mode_2017 = mapDataToMonths(data_2017);
+        var delivery_2017 = mapDataToSales(data_2017);
+
+        var ship_mode_2018 = mapDataToMonths(data_2018);
+        var delivery_2018 = mapDataToSales(data_2018);
 
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ship_mode_2015, // Utilizamos las etiquetas del conjunto de datos de 2015
+                labels: ship_mode_2015,
                 datasets: [{
                     label: '2015',
                     data: delivery_2015,
@@ -307,8 +281,8 @@
                     fill: false,
                     pointRadius: 5,
                     pointHoverRadius: 5,
-                    borderColor: '#50F188',
-                    backgroundColor: '#50F188'
+                    borderColor: 'lightgreen',
+                    backgroundColor: 'lightgreen'
                 }]
             },
             options: {
@@ -349,18 +323,4 @@
         });
     });
 </script>
-<script>
-    function toggleDataset(year) {
-        var chart = Chart.getChart('monthly_sales'); // Obtener la instancia del gráfico por su ID
-        var datasetIndex = chart.data.datasets.findIndex(dataset => dataset.label === 'Avg delivery time - ' + year); // Encontrar el índice del conjunto de datos correspondiente al año
-
-        if (datasetIndex !== -1) { // Si se encuentra el conjunto de datos
-            var dataset = chart.getDatasetMeta(datasetIndex); // Obtener la metadata del conjunto de datos
-            dataset.hidden = !dataset.hidden; // Cambiar el estado de ocultar/mostrar el conjunto de datos
-            chart.update(); // Actualizar el gráfico
-        }
-    }
-</script>
-
-
     {% endblock %}

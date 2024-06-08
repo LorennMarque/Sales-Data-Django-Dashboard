@@ -66,15 +66,14 @@ df['year_month'] = df['year'].astype(str) + '-' + df['month'].astype(str).str.zf
 
 # ----------------------------------------------------------------------------------
 
-# TOP 5 productos que más ganancias dieron (piechart)
-# print(df.groupby('Product Name')['Sales'].agg("sum").nlargest(5).reset_index())
+# print("TOP 5 productos que más ganancias dieron (piechart)")
+# print(df.groupby('Product Name')['Sales'].agg("sum").nlargest(10).reset_index())
 
 # ----------------------------------------------------------------------------------
 
-# Promedio de gasto por cliente por año
+# print("Promedio de gasto por cliente por año")
 # avg_sales_per_year = df.groupby('year')['Sales'].mean().reset_index()
 # print(avg_sales_per_year)
-
 # ----------------------------------------------------------------------------------
 
 # year_of_interest = 2017  # Cambia este valor al año que te interese
@@ -84,8 +83,10 @@ df['year_month'] = df['year'].astype(str) + '-' + df['month'].astype(str).str.zf
 # avg_sales_per_year_of_interest = df_year_of_interest.groupby('month')['Sales'].mean().reset_index()
 
 # print(avg_sales_per_year_of_interest)
+# ----------------------------------------------------------------------------------
 
-
+# print("INGRESO PROMEDIO POR CLIENTE POR AÑO")
+# ingreso_cliente = df.groupby(["year", "Customer ID"])['Sales'].sum().groupby("year").mean().reset_index()
 
 # ----------------------------------------------------------------------------------
 

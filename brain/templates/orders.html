@@ -1,9 +1,13 @@
 {% extends "layout.html" %}
+{% block title %}Orders{% endblock %}
+
 {% block section %}<i data-feather="truck"></i> Orders {%endblock%}
 {% block content %}
-
-<div class="row mb-3">
-
+<h4  data-aos="fade-zoom-in">Monthly Sales per year</h4>
+<div class="card" style="height:450px">
+    <canvas  id="amount_of_sales_per_month_and_year"></canvas>
+</div>
+<div class="row mt-3">
     <div class="col-lg-8">
         <h4  data-aos="fade-zoom-in">Avg Delivery Time per Month (Hours)</h4>
         
@@ -20,10 +24,7 @@
       <canvas  id="avg_delivery_time_per_ship_mode"></canvas>
     </div>
   </div>
-
-
 </div>
-
 <h4 data-aos="fade-zoom-in" data-aos-delay="150">All orders</h4>
 <div class="card p-3" data-aos="fade-zoom-in" data-aos-delay="250">
     <table class="table table-striped mb-6">
@@ -75,9 +76,73 @@
 
     {% block scripts %}
     <script>
-      {% comment %} CUARTO GRÁFICO  {% endcomment %}
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('amount_of_sales_per_month_and_year').getContext('2d');
+            var data = JSON.parse('{{ amount_of_sales_per_month_and_year|safe }}'); // Asegúrate de pasar correctamente los datos JSON desde Django
+        
+            var ship_mode = data.map(function(item) {
+                return item['year_month'];
+            });
+        
+            var delivery = data.map(function(item) {
+                return item['Sales'];
+            });
+        
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ship_mode,
+                    datasets: [{
+                        label: 'Avg delivery time',
+                        data: delivery,
+                        fill: true, // Indica que se debe llenar el área bajo la línea
+                        backgroundColor: 'rgba(136, 80, 241, 0.3)', // Color violeta con poca opacidad
+                        borderColor: '#8850F1', // Color de la línea
+                        borderWidth: 2 // Grosor de la línea
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Sale Amount',
+                                font: {
+                                    size: 16
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date',
+                                font: {
+                                    size: 16
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
       var ctx = document.getElementById('avg_delivery_time_per_ship_mode').getContext('2d');
-      var data = JSON.parse('{{avg_delivery_time_per_ship_mode|safe}}'); // Asegúrate de pasar correctamente los datos JSON desde Django
+      var data = JSON.parse('{{avg_delivery_time_per_ship_mode|safe}}');
       
       var ship_mode = data.map(function(item) {
           return item['Ship Mode'];
@@ -87,7 +152,6 @@
           return item['delivery'];
       });
     
-      // Define un array de colores
       var colors = ['#8850F1',  '#B48DF9', '#A370F7', '#C3A6FA'];
       
       var myChart = new Chart(ctx, {
@@ -119,7 +183,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var ctx = document.getElementById('monthly_delivery_time').getContext('2d');
-            var data = JSON.parse('{{ monthly_delivery_time|safe }}'); // Asegúrate de pasar correctamente los datos JSON desde Django
+            var data = JSON.parse('{{ monthly_delivery_time|safe }}');
         
             var ship_mode = data.map(function(item) {
                 return item['date'];
@@ -139,8 +203,8 @@
                         fill: false,
                         pointRadius: 5,
                         pointHoverRadius: 5,
-                        borderColor: '#8850F1', // Set the line color to purple
-                        backgroundColor: '#8850F1' // Set the point color to purple
+                        borderColor: '#8850F1',
+                        backgroundColor: '#8850F1'
                     }]
                 },
                 options: {

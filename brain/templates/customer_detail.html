@@ -1,4 +1,9 @@
 {% extends "layout.html" %}
+
+{% block title %}
+    {{ customer.customer_name }}
+{% endblock %}
+
 {% block section %}
     <i data-feather="truck"></i> <a href="/customers" style="text-decoration:none;color:#8850F1;">Orders</a> / {{ customer.customer_name }}
 {% endblock %}

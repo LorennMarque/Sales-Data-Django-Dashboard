@@ -1,11 +1,23 @@
 {% extends "layout.html" %}
+{% block title %}Products{% endblock %}
+
 {% block section %} <i data-feather="package"></i> Products {%endblock%}
 {% block content %}
 
-<h4 data-aos="fade-zoom-in">Best Selling Sub Categories</h4>
-<div class="card p-1 mb-2" style="height:650px" data-aos="fade-zoom-in" data-aos-delay="100">
-  <canvas  id="best_selling_sub_categories"></canvas>
-  </div> 
+<div class="row">
+    <div class="col-4">
+      <h4 data-aos="fade-zoom-in">Revenue per Segment</h4>
+      <div class="card p-1 align-items-center" style="height:45vh" data-aos="fade-zoom-in" data-aos-delay="100">
+        <canvas  id="best_segments"></canvas>
+        </div> 
+    </div>
+    <div class="col-8">
+      <h4 data-aos="fade-zoom-in">10 Best Selling Sub Categories</h4>
+      <div class="card p-1 mb-2" style="height:45vh" data-aos="fade-zoom-in" data-aos-delay="100">
+        <canvas id="best_selling_sub_categories"></canvas>
+        </div> 
+    </div>
+</div>
 
 {% comment %} <h4 data-aos="fade-zoom-in">Best Selling Products <span class="text-muted">(All time)</span></h4> {% endcomment %}
   <h4 data-aos="fade-zoom-in" data-aos-delay="500">All Products</h4>
@@ -38,8 +50,8 @@
                   {% endfor %}
                   <li class="page-item"><a class="page-link" href="http://127.0.0.1:8000/products?page={{pagination.last_page}}">Last</a></li>
                   </ul>
-                  </nav>
-                  </div>
+       </nav>
+      </div>
 </div>           
 
 {% endblock %}
@@ -94,4 +106,44 @@
   });
 </script>
 
+
+<script>
+  var ctx = document.getElementById('best_segments').getContext('2d');
+  var data = JSON.parse('{{best_segments|safe}}');
+  
+  var ship_mode = data.map(function(item) {
+      return item['Segment'];
+  });
+  
+  var delivery = data.map(function(item) {
+      return item['Sales'];
+  });
+
+  // Define un array de colores
+  var colors = ['#8850F1',  '#B48DF9', '#A370F7', '#C3A6FA'];
+  
+  var myChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+          labels: ship_mode,
+          datasets: [{
+              label: 'Avg delivery time',
+              data: delivery,
+              backgroundColor: colors,
+              fill: false
+          }]
+      },
+      options: {
+          indexAxis: 'y',
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+              }]
+          }
+      }
+  });
+
+</script>
 {% endblock %}

@@ -3,7 +3,19 @@
 {% block section %} 
 <i data-feather="home"></i> Overview {%endblock%}
 {% block content %}
-                <div class="row">
+            <div class="d-flex">
+                <h4 data-aos="fade-zoom-in" >Historic Monthly Revenue</h4>
+                <div class="ms-auto">
+                    <button class="toggleButtons" onclick="toggleDataset('2015')">Ocultar 2015</button>
+                    <button class="toggleButtons" onclick="toggleDataset('2016')">Ocultar 2016</button>
+                    <button class="toggleButtons" onclick="toggleDataset('2017')">Ocultar 2017</button>
+                    <button class="toggleButtons" onclick="toggleDataset('2018')">Ocultar 2018</button>
+                </div>
+            </div>
+            <div class="card" style="height:400px" data-aos="fade-zoom-in" data-aos-delay="100">
+                <canvas id="monthly_sales"></canvas>
+            </div>
+                <div class="row my-3">
                     <div class="col-lg-5">
                         <h4 data-aos="fade-zoom-in" >Overall Performance</h4>
                         <div class="row">
@@ -56,7 +68,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-lg-5">
-                        <h4 data-aos="fade-zoom-in" data-aos-delay="400">Sales Amount per State</h4>
+                        <h4 data-aos="fade-zoom-in" data-aos-delay="400">Revenue per State</h4>
                         <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="450">
                             {% comment %} <h1>{{sales_amount_per_state}}</h1> {% endcomment %}
                             <canvas id="sales_amount_per_state"></canvas>
@@ -225,6 +237,130 @@
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var ctx = document.getElementById('monthly_sales').getContext('2d');
+        var data_2015 = JSON.parse('{{ monthly_sales_2015|safe }}');
+        var data_2016 = JSON.parse('{{ monthly_sales_2016|safe }}');
+        var data_2017 = JSON.parse('{{ monthly_sales_2017|safe }}');
+        var data_2018 = JSON.parse('{{ monthly_sales_2018|safe }}');
+
+        var ship_mode_2015 = data_2015.map(function(item) {
+            return item['month'];
+        });
+        var delivery_2015 = data_2015.map(function(item) {
+            return item['Sales'];
+        });
+
+        var ship_mode_2016 = data_2016.map(function(item) {
+            return item['month'];
+        });
+        var delivery_2016 = data_2016.map(function(item) {
+            return item['Sales'];
+        });
+
+        var ship_mode_2017 = data_2017.map(function(item) {
+            return item['month'];
+        });
+        var delivery_2017 = data_2017.map(function(item) {
+            return item['Sales'];
+        });
+
+        var ship_mode_2018 = data_2018.map(function(item) {
+            return item['month'];
+        });
+        var delivery_2018 = data_2018.map(function(item) {
+            return item['Sales'];
+        });
+
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ship_mode_2015, // Utilizamos las etiquetas del conjunto de datos de 2015
+                datasets: [{
+                    label: '2015',
+                    data: delivery_2015,
+                    fill: false,
+                    pointRadius: 5,
+                    pointHoverRadius: 5,
+                    borderColor: '#FF5733',
+                    backgroundColor: '#FF5733'
+                }, {
+                    label: '2016',
+                    data: delivery_2016,
+                    fill: false,
+                    pointRadius: 5,
+                    pointHoverRadius: 5,
+                    borderColor: '#8850F1',
+                    backgroundColor: '#8850F1'
+                }, {
+                    label: '2017',
+                    data: delivery_2017,
+                    fill: false,
+                    pointRadius: 5,
+                    pointHoverRadius: 5,
+                    borderColor: '#F15088',
+                    backgroundColor: '#F15088'
+                }, {
+                    label: '2018',
+                    data: delivery_2018,
+                    fill: false,
+                    pointRadius: 5,
+                    pointHoverRadius: 5,
+                    borderColor: '#50F188',
+                    backgroundColor: '#50F188'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Revenue',
+                            font: {
+                                size: 16 
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14 
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Months',
+                            font: {
+                                size: 16 
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14 
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+<script>
+    function toggleDataset(year) {
+        var chart = Chart.getChart('monthly_sales'); // Obtener la instancia del gráfico por su ID
+        var datasetIndex = chart.data.datasets.findIndex(dataset => dataset.label === 'Avg delivery time - ' + year); // Encontrar el índice del conjunto de datos correspondiente al año
+
+        if (datasetIndex !== -1) { // Si se encuentra el conjunto de datos
+            var dataset = chart.getDatasetMeta(datasetIndex); // Obtener la metadata del conjunto de datos
+            dataset.hidden = !dataset.hidden; // Cambiar el estado de ocultar/mostrar el conjunto de datos
+            chart.update(); // Actualizar el gráfico
+        }
+    }
+</script>
 
 
     {% endblock %}

@@ -1,12 +1,54 @@
 {% extends "layout.html" %}
 {% block section %}<i data-feather="truck"></i> Orders {%endblock%}
 {% block content %}
+
+
+
+
     <h4 data-aos="fade-zoom-in">Top 10 Most Selling Cities</h4>
     <div class="card p-3 mb-3" style="height:750px"  data-aos="fade-zoom-in" data-aos-delay="100">
         <canvas id="sales_per_city"></canvas>
     </div>
 
-    <h4 data-aos="fade-zoom-in" data-aos-delay="100">All Customers</h4>
+    <h4 data-aos="fade-zoom-in">Popular Products</h4>
+    <div class="row">
+        <div class="col-lg-6 mb-3">
+            <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="100">
+                <h3>2015</h3>
+                {% for product in top_3_selling_2015 %}
+                        <p>{{ product.ProductName }} - ${{ product.TotalSales }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-lg-6 mb-3">
+            <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="100">
+                <h3>2016</h3>
+                {% for product in top_3_selling_2016 %}
+                        <p>{{ product.ProductName }} - ${{ product.TotalSales }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="100">
+                <h3>2017</h3>
+                {% for product in top_3_selling_2017 %}
+                        <p>{{ product.ProductName }} - ${{ product.TotalSales }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="100">
+                <h3>2018</h3>
+                {% for product in top_3_selling_2018 %}
+                        <p>{{ product.ProductName }} - ${{ product.TotalSales }}</p>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+
+    <h4 class="mt-2" data-aos="fade-zoom-in" data-aos-delay="100">All Customers</h4>
     <div class="card p-2" data-aos="fade-zoom-in" data-aos-delay="200">
     <table class="table table-striped mb-6" data-aos="fade-zoom-in" data-aos-delay="250">
         <thead>
@@ -19,21 +61,26 @@
                 <th>Postal Code</th>
                 <th>Region</th>
             </tr>
+           
         </thead>
+        
         <tbody>
             {% for customer in page_obj %}
                 <tr>
-                    <td><a href="{% url 'customer_details' customer.id %}">{{ customer.customer_id }}</a></td>
+                    <td><a href="{% url 'customer_detail' customer.id %}">{{ customer.customer_id }}</a></td>
                     <td>{{ customer.customer_name }}</td>
                     <td>{{ customer.country }}</td>
                     <td>{{ customer.city }}</td>
                     <td>{{ customer.state }}</td>
                     <td>{{ customer.postal_code }}</td>
                     <td>{{ customer.region }}</td>
+                    
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    
 </div>
     {% if page_obj.has_previous %}
         <a href="?page=1">First</a>

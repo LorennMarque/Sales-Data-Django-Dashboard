@@ -10,32 +10,58 @@ df['day'] = df['Order Date'].dt.day
 df['month'] = df['Order Date'].dt.month
 df['year'] = df['Order Date'].dt.year
 df['delivery'] = df['Ship Date'] - df['Order Date']
+df['year_month'] = df['year'].astype(str) + '-' + df['month'].astype(str).str.zfill(2)
 
 # ----------------------------------------------------------------------------------
-# Los productos más vendidos de cada año con sus nombres
-top_10_por_año = df.groupby(['year', 'Product Name'])['Sales'].count().groupby('year').nlargest(3).reset_index(level=0, drop=True)
-print(top_10_por_año)
+# print("3 Los productos más vendidos de 2015 con sus nombres")
+# top_3_selling_2015 = df[df['year'] == 2015].groupby('Product Name')['Sales'].sum().nlargest(3).reset_index()
+# # top_3_selling_2015 = df[df['year'] == 2015][['Product Name','Sales']].sum().nlargest(3,'Sales').reset_index(drop=True)
+# print(top_3_selling_2015)
 
-# ----------------------------------------------------------------------------------
+# print("3 Los productos más vendidos de 2016 con sus nombres")
+# top_3_selling_2016 = df[df['year'] == 2016][['Product Name','Sales']].nlargest(3,'Sales').reset_index(drop=True)
+# print(top_3_selling_2016)
 
-# Ingresos x mes y año
-# sales_per_year = df.groupby(['year','month'])['Sales'].agg('sum').reset_index()  
+# print("3 Los productos más vendidos de 2017 con sus nombres")
+# top_3_selling_2017 = df[df['year'] == 2017][['Product Name','Sales']].nlargest(3,'Sales').reset_index(drop=True)
+# print(top_3_selling_2017)
+
+# print("3 Los productos más vendidos de cada 2018 con sus nombres")
+# top_3_selling_2018 = df[df['year'] == 2018][['Product Name','Sales']].nlargest(3,'Sales').reset_index(drop=True)
+# print(top_3_selling_2018)
+
+# --------------------------------------------------------------------------------
+# sales_per_year = df.groupby(['year', 'month'])['Sales'].agg('sum').reset_index()
+
+# sales_per_year['year_month'] = pd.to_datetime(sales_per_year[['year', 'month']].assign(day=1))
+
+# sales_per_year['year_month'] = sales_per_year['year_month'].dt.strftime('%Y-%m')
+
+# # Eliminando las columnas originales de año y mes
+# sales_per_year = sales_per_year.drop(columns=['year', 'month'])
+
 # print(sales_per_year)
-
 # ----------------------------------------------------------------------------------
 
-# Cantidad de ventas x mes y año
-# amount_of_sales_per_month_and_year = df.groupby(['year','month'])['Sales'].agg('count').reset_index()  
+# print("Ingresos x mes y año")
+# monthly_sales_2015 = df.groupby(['year','month'])['Sales'].sum()[2015].reset_index()
+# monthly_sales_2016 = df.groupby(['year','month'])['Sales'].sum()[2016].reset_index()
+# monthly_sales_2017 = df.groupby(['year','month'])['Sales'].sum()[2017].reset_index()
+# monthly_sales_2018 = df.groupby(['year','month'])['Sales'].sum()[2018].reset_index()
+# ----------------------------------------------------------------------------------
+
+# print("Cantidad de ventas por mes y año")
+# amount_of_sales_per_month_and_year = df.groupby('year_month')['Sales'].count().reset_index()
 # print(amount_of_sales_per_month_and_year)
 
 # ----------------------------------------------------------------------------------
 
-# TOP 10 clientes que más han gastado
+# print("TOP 10 clientes que más han gastado")
 # print(df.groupby('Customer Name')['Sales'].agg('sum').nlargest(10).reset_index())
 
 # ----------------------------------------------------------------------------------
 
-# Sectores Segments con mayores revenues
+# print("Sectores Segments con mayores revenues")
 # print(df.groupby('Segment')['Sales'].agg("sum").reset_index())
 
 # ----------------------------------------------------------------------------------

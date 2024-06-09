@@ -1,0 +1,147 @@
+
+#sidebar {
+    min-height: 100vh;
+}
+#sidebar .nav-link {
+    color: #545f75;
+}
+
+main {
+    background-color: #F7F8FC;
+}
+
+#sidebar {
+    background-color: #ffff;
+}
+
+.nav-item a {
+    font-size: 20px;
+}
+
+.nav-item.active a {
+    color: #FFFFFF; /* Aquí cambiamos el color de las letras a blanco */
+}
+
+.nav-item.active {
+    background-color: #8850F1;
+}
+
+.nav-item {
+    border-bottom: 2px solid #f7f7f7;
+    border-radius: 10px;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+}
+
+.counters{
+    height: 196px;
+    padding: 15px 10px;
+}
+
+/* Estilo solo para el tercer td de la fila ganadora */
+#winner td {
+    background-color: #8850F1 ;
+    color: white ;
+    position: relative;
+    font-weight: bold;
+    }
+    
+    /* Estilo para el emoji en el tercer td */
+    #winner td:nth-child(3)::after {
+    content: "\1F451";
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%) rotate(45deg); /* Girar el emoji 45 grados */
+    font-size: 35px;
+}
+
+
+/* Mobile Styles */
+@media (max-width: 767px) {
+    .icons{
+        display: none;
+    }
+
+    main{
+        padding-top: 70px;
+    }
+
+    .chart{
+        height:370px;
+    }
+
+    #container{
+        margin: 0px;
+    }
+
+    .annotations{
+        font-size: 18px;
+    }
+    .counters{
+        height: 120px;
+        padding: 10px 7px;
+    }
+
+    .amount_of_sales_per_month_and_year{
+        height: 250px;
+    }
+    .sales_per_year{
+        height: 250px;
+    }
+
+    .monthly_delivery_time{
+        height:45vh
+    }
+
+    .avg_delivery_time_per_ship_mode{
+        height:45vh
+    }
+
+    .sales_amount_per_state{
+        height:400px
+    }
+    .sales_per_city{
+        height:400px
+    }
+    .avg_revenue_perClient_year{
+        height:34vh
+    }
+
+    .year{
+        margin: 140px 0;
+    }
+}
+
+
+/* Desktop Styles */
+@media (min-width: 1024px) {
+    .chart{
+        height: 450px;
+    }
+
+    .sales_per_year{
+        height: 420px;
+    }
+    .amount_of_sales_per_month_and_year{
+        height: 450px;
+}
+    .monthly_delivery_time{
+        height:55vh
+}
+    .avg_delivery_time_per_ship_mode{
+        height:55vh
+}
+    .sales_amount_per_state{
+    height:690px
+}
+    .sales_per_city{
+        height:750px
+}
+    .avg_revenue_perClient_year{
+        height:64vh
+    }
+
+}

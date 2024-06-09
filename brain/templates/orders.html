@@ -4,29 +4,29 @@
 {% block section %}<i data-feather="truck"></i> Orders {%endblock%}
 {% block content %}
 <h4  data-aos="fade-zoom-in">Monthly Sales per year</h4>
-<div class="card" style="height:450px">
+<div class="card amount_of_sales_per_month_and_year">
     <canvas  id="amount_of_sales_per_month_and_year"></canvas>
 </div>
-<div class="row mt-3">
-    <div class="col-lg-8">
-        <h4  data-aos="fade-zoom-in">Avg Delivery Time per Month (Hours)</h4>
+<div class="row ">
+    <div class="col-lg-7">
+        <h4  data-aos="fade-zoom-in" class="mt-3">Avg Delivery Time per Month (Hours)</h4>
         
-        <div class="card p-3" style="height:55vh" data-aos="fade-zoom-in">
+        <div class="card p-3 monthly_delivery_time"  data-aos="fade-zoom-in">
           {% comment %} {{monthly_delivery_time}}  {% endcomment %}
           <canvas  id="monthly_delivery_time"></canvas>
+        </div> 
         </div>
-      </div>
 
-  <div class="col-lg-4">
-    <h4 data-aos="fade-zoom-in" data-aos-delay="100">Avg Delivery Time per Ship Mode </h4>
-    <div class="card p-3" style="height:55vh" data-aos="fade-zoom-in" data-aos-delay="150">
-      {% comment %} {{avg_delivery_time_per_ship_mode}} {% endcomment %}
-      <canvas  id="avg_delivery_time_per_ship_mode"></canvas>
+    <div class="col-lg-5">
+        <h4 data-aos="fade-zoom-in" data-aos-delay="100"  class="mt-3">Ship Mode Delivery Time</h4>
+        <div class="card p-3 align-items-center avg_delivery_time_per_ship_mode" data-aos="fade-zoom-in" data-aos-delay="150">
+        {% comment %} {{avg_delivery_time_per_ship_mode}} {% endcomment %}
+        <canvas  id="avg_delivery_time_per_ship_mode"></canvas>
+            </div>
     </div>
-  </div>
 </div>
-<h4 data-aos="fade-zoom-in" data-aos-delay="150">All orders</h4>
-<div class="card p-3" data-aos="fade-zoom-in" data-aos-delay="250">
+<h4 data-aos="fade-zoom-in" data-aos-delay="150" class="mt-3">All orders</h4>
+<div class="card p-3 " data-aos="fade-zoom-in" data-aos-delay="250">
     <table class="table table-striped mb-6">
         <thead>
             <tr>
@@ -49,28 +49,31 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+            {% for page in page_obj.paginator.page_range %}
+                {% if page >= page_obj.number|add:"-3" and page <= page_obj.number|add:"3" %}
+                    <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+            {% endif %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+        </ul>
+    </nav>    
 </div> 
-
-<!-- Agregar enlaces de paginación -->
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; First</a>
-            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
-
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">Next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
-
-
 {% endblock %}  
 <!-- ############################################################################################### -->
 
@@ -93,7 +96,7 @@
                 data: {
                     labels: ship_mode,
                     datasets: [{
-                        label: 'Avg delivery time',
+                        label: 'Sales per month',
                         data: delivery,
                         fill: true, // Indica que se debe llenar el área bajo la línea
                         backgroundColor: 'rgba(136, 80, 241, 0.3)', // Color violeta con poca opacidad

@@ -67,31 +67,47 @@ def overview(request):
 # ==================== PEDIDOS =========================================
 def orders(request):
     avg_delivery_time_per_ship_mode = round(df.groupby('Ship Mode')['delivery'].mean().dt.total_seconds() / 3600, 3).reset_index()
+    avg_delivery_time_per_ship_mode = avg_delivery_time_per_ship_mode[avg_delivery_time_per_ship_mode['Ship Mode'] != 'Same Day']
     avg_delivery_time_per_ship_mode = avg_delivery_time_per_ship_mode.to_json(orient='records')
     
+
     average_delivery_hours = df.groupby(["year", "month"])['delivery'].mean().dt.total_seconds() / 3600
     average_delivery_hours = average_delivery_hours.reset_index()
     average_delivery_hours['date'] = average_delivery_hours['month'].astype(str) + '-' + average_delivery_hours['year'].astype(str)
-    result_data = average_delivery_hours[['date', 'delivery']]
+    
+    result_data = average_delivery_hours[['date', 'delivery']].copy()
     result_data.columns = ['date', 'average_delivery_hours']
     result_data['average_delivery_hours'] = result_data['average_delivery_hours'].round(3)
     result_data = result_data.to_json(orient='records')
     
     amount_of_sales_per_month_and_year = df.groupby('year_month')['Sales'].count().reset_index()
     amount_of_sales_per_month_and_year = amount_of_sales_per_month_and_year.to_json(orient='records')
+    # Obtener todos los pedidos ordenados por fecha de pedido
     orders = Sale.objects.all().order_by('-order_date')
 
-    # Paginación
-    paginator = Paginator(orders, 20) 
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    # Número de página actual
+    page_number = request.GET.get('page', 1)
 
+    # Paginar los resultados
+    paginator = Paginator(orders, 10)  # 10 elementos por página
+
+    try:
+        page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        # Si el parámetro de la página no es un número, mostrar la primera página
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        # Si la página está fuera de rango (página 9999), mostrar la última página de resultados
+        page_obj = paginator.page(paginator.num_pages)
+
+    # Pasar objetos de página a la plantilla
     context = {
+        "page_obj": page_obj,
+        # También puedes pasar otros datos si es necesario
         "avg_delivery_time_per_ship_mode": avg_delivery_time_per_ship_mode,
         "monthly_delivery_time": result_data,
-        "page_obj": page_obj, 
-        "amount_of_sales_per_month_and_year":amount_of_sales_per_month_and_year,
-        "active": 2
+        "amount_of_sales_per_month_and_year": amount_of_sales_per_month_and_year,
+        "active": 2,
     }
     
     return render(request, 'orders.html', context)
@@ -104,6 +120,18 @@ def products(request):
 
     best_segments = df.groupby('Segment')['Sales'].agg("sum").reset_index()
     best_segments = best_segments.to_json(orient='records')
+
+    top_3_selling_2015 = df[df['year'] == 2015].groupby('Product Name')['Sales'].sum().nlargest(5).reset_index().round(2)
+    top_3_selling_2015 = top_3_selling_2015.rename(columns={'Product Name': 'ProductName', 'Sales': 'TotalSales'}).to_dict('records')
+
+    top_3_selling_2016 = df[df['year'] == 2016].groupby('Product Name')['Sales'].sum().nlargest(5).reset_index().round(2)
+    top_3_selling_2016 = top_3_selling_2016.rename(columns={'Product Name': 'ProductName', 'Sales': 'TotalSales'}).to_dict('records')
+
+    top_3_selling_2017 = df[df['year'] == 2017].groupby('Product Name')['Sales'].sum().nlargest(5).reset_index().round(2)
+    top_3_selling_2017 = top_3_selling_2017.rename(columns={'Product Name': 'ProductName', 'Sales': 'TotalSales'}).to_dict('records')
+
+    top_3_selling_2018 = df[df['year'] == 2018].groupby('Product Name')['Sales'].sum().nlargest(5).reset_index().round(2)
+    top_3_selling_2018 = top_3_selling_2018.rename(columns={'Product Name': 'ProductName', 'Sales': 'TotalSales'}).to_dict('records')
 
     page_number = request.GET.get('page', 1)
 
@@ -143,6 +171,10 @@ def products(request):
         "active": 3,
         "best_selling_products": best_selling_products_list, 
         "best_segments":best_segments,
+        "top_3_selling_2015":top_3_selling_2015,
+        "top_3_selling_2016":top_3_selling_2016,
+        "top_3_selling_2017":top_3_selling_2017,
+        "top_3_selling_2018":top_3_selling_2018,
         "pagination":  {
             "first_page":1,
             "last_page":paginator.num_pages,
@@ -157,27 +189,12 @@ def customers(request):
     sales_per_city = df.groupby('City')['Sales'].sum().reset_index().sort_values("Sales",ascending=False)
     sales_per_city = sales_per_city.nlargest(10, 'Sales').reset_index(drop=True)
     sales_per_city = sales_per_city.to_json(orient='records')
-
-    top_3_selling_2015 = df[df['year'] == 2015].groupby('Product Name')['Sales'].sum().nlargest(3).reset_index()
-    top_3_selling_2015 = top_3_selling_2015.rename(columns={'Product Name': 'ProductName', 'Sales': 'TotalSales'}).to_dict('records')
-
-    top_3_selling_2016 = df[df['year'] == 2016].groupby('Product Name')['Sales'].sum().nlargest(3).reset_index()
-    top_3_selling_2016 = top_3_selling_2016.rename(columns={'Product Name': 'ProductName', 'Sales': 'TotalSales'}).to_dict('records')
-
-    top_3_selling_2017 = df[df['year'] == 2017].groupby('Product Name')['Sales'].sum().nlargest(3).reset_index()
-    top_3_selling_2017 = top_3_selling_2017.rename(columns={'Product Name': 'ProductName', 'Sales': 'TotalSales'}).to_dict('records')
-
-    top_3_selling_2018 = df[df['year'] == 2018].groupby('Product Name')['Sales'].sum().nlargest(3).reset_index()
-    top_3_selling_2018 = top_3_selling_2018.rename(columns={'Product Name': 'ProductName', 'Sales': 'TotalSales'}).to_dict('records')
     
     top_10_customers = df.groupby('Customer Name')['Sales'].agg('sum').nlargest(10).reset_index()
-    top_10_customers = top_10_customers.to_json(orient='records')
+    top_10_customers = top_10_customers.rename(columns={'Customer Name': 'name', 'Sales': 'sales'}).to_dict('records')
 
     avg_revenue_perClient_year = df.groupby(["year", "Customer ID"])['Sales'].sum().groupby("year").mean().reset_index()
     avg_revenue_perClient_year = avg_revenue_perClient_year.to_json(orient="records")
-
-    # avg_revenue_per_year = df.groupby('year')['Sales'].mean().reset_index()
-    # avg_revenue_per_year= avg_revenue_per_year.to_json(orient='records')
     
     customers_list = Customer.objects.all()
     paginator = Paginator(customers_list, 20)  
@@ -188,10 +205,6 @@ def customers(request):
     return render(request, 'customers.html', {
         'page_obj': page_obj,
         'sales_per_city': sales_per_city,
-        "top_3_selling_2015":top_3_selling_2015,
-        "top_3_selling_2016":top_3_selling_2016,
-        "top_3_selling_2017":top_3_selling_2017,
-        "top_3_selling_2018":top_3_selling_2018,
         "top_10_customers":top_10_customers,
         "avg_revenue_perClient_year":avg_revenue_perClient_year,
         "active":4

@@ -6,80 +6,80 @@
 <i data-feather="home"></i> Overview {%endblock%}
 {% block content %}
             <h4 data-aos="fade-zoom-in" >Historic Monthly Revenue</h4>
-            <div class="card" style="height:400px" data-aos="fade-zoom-in" data-aos-delay="100">
+            <div class="card chart" data-aos="fade-zoom-in" data-aos-delay="100">
                 <canvas id="monthly_sales"></canvas>
             </div>
                 <div class="row my-3">
                     <div class="col-lg-5">
                         <h4 data-aos="fade-zoom-in" >Overall Performance</h4>
-                        <div class="row">
-                            <div class="col-lg-6 ">
-                                <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="100">
+                        <div class="row" data-aos="fade-zoom-in" data-aos-delay="100">
+                            <div class="col-6">
+                                <div class="card counters justify-content-center" >
                                     <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                         <i data-feather="dollar-sign" stroke="#212529"></i>
                                     </div>
                                     <p class="text-muted mt-2" style="font-size:12px;">Total Revenue</p>
-                                    <h3>${{year_sales_total}}</h3>
+                                    <h3 class="annotations">${{year_sales_total}}</h3>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
-                                <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="100">
+                            <div class="col-6">
+                                <div class="card counters justify-content-center">
                                     <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                         <i data-feather="shopping-cart" stroke="#212529"></i>
                                     </div>
                                     <p class="text-muted mt-2" style="font-size:12px;">Sales Count</p>
-                                    <h3 style="margin:0px;">{{year_sales_amount}} Sales</h3>
+                                    <h3 class="annotations" style="margin:0px;">{{year_sales_amount}} Sales</h3>
                                 </div>
                             </div>
-                            <div class="col-lg-6" style="margin-top:25px">
-                                <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="200">
+                            <div class="col-6" style="margin-top:25px">
+                                <div class="card counters justify-content-center">
                                     <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                         <i data-feather="clock" stroke="#212529"></i>
                                     </div>
                                     <p class="text-muted mt-2" style="font-size:12px;">Avg Time of Delivery</p>
-                                    <h3>{{avg_delivery_time}} Hrs</h3>
+                                    <h3 class="annotations">{{avg_delivery_time}} Hrs</h3>
                                 </div>
                             </div>
-                            <div class="col-lg-6" style="margin-top:25px">
-                                <div class="card px-3 justify-content-center" style="height:196px" data-aos="fade-zoom-in" data-aos-delay="300">
+                            <div class="col-6" style="margin-top:25px">
+                                <div class="card counters justify-content-center">
                                     <div style="height: 45px; width: 45px; background-color: #F7F8FC; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                         <i data-feather="user" stroke="#212529"></i>
                                     </div>
                                     <p class="text-muted mt-2" style="font-size:12px;">Avg Revenue per Costumer</p>
-                                    <h3>${{avg_income_per_costumer}}</h3>
+                                    <h3 class="annotations">${{avg_income_per_costumer}}</h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-7 mb-4">
+                    <div class="col-lg-7 mt-3 mt-lg-0">
                         <h4 data-aos="fade-zoom-in" data-aos-delay="150">Yearly Revenue</h4>
-                        <div class="card p-3" style="height:420px" data-aos="fade-zoom-in" data-aos-delay="200">
+                        <div class="card sales_per_year p-3"  data-aos="fade-zoom-in" data-aos-delay="200">
                             <canvas id="sales_per_year"></canvas>
                         </div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-lg-5">
-                        <h4 data-aos="fade-zoom-in" data-aos-delay="400">Revenue per State</h4>
-                        <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="450">
+                        <h4 data-aos="fade-zoom-in" data-aos-delay="400" class="mt-3">Revenue per State</h4>
+                        <div class="card p-4 sales_amount_per_state" data-aos="fade-zoom-in" data-aos-delay="450">
                             <canvas id="sales_amount_per_state"></canvas>
                         </div>
                     </div>
                     <div class="col-lg-7">
-                        <h4 data-aos="fade-zoom-in" data-aos-delay="500">Products with Highest Revenue</h4>
-                        <div class="card p-4" style="height:730px" data-aos="fade-zoom-in" data-aos-delay="550"> 
-                            <table class="table table-striped mb-6">
+                        <h4 data-aos="fade-zoom-in" data-aos-delay="500" class="mt-3">15 Products with Highest Revenue</h4>
+                        <div class="card p-2" data-aos="fade-zoom-in" data-aos-delay="550"> 
+                            <table class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>Product</th>
-                                        <th>Units Sold</th>
+                                        <th>Revenue</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for producto in best_products %}
                                     <tr>
                                         <td>{{ producto.product}}</td>
-                                        <td>{{ producto.sales|floatformat:1 }}</td>
+                                        <td>${{ producto.sales|floatformat:2 }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -138,7 +138,7 @@
                     x: {
                         title: {
                             display: true,
-                            text: 'Years',
+                            text: 'Year',
                             font: {
                                 size: 16
                             }
@@ -323,4 +323,6 @@
         });
     });
 </script>
+
+
     {% endblock %}

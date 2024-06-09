@@ -85,11 +85,11 @@ df['year_month'] = df['year'].astype(str) + '-' + df['month'].astype(str).str.zf
 # print(avg_sales_per_year_of_interest)
 # ----------------------------------------------------------------------------------
 
-# print("INGRESO PROMEDIO POR CLIENTE POR AÑO")
-# ingreso_cliente = df.groupby(["year", "Customer ID"])['Sales'].sum().groupby("year").mean().reset_index()
-
+print("INGRESO PROMEDIO POR CLIENTE POR AÑO")
+ingreso_cliente = df.groupby(["year", "Customer ID"])['Sales'].sum().groupby("year").mean().reset_index()
+print(ingreso_cliente)
 # ----------------------------------------------------------------------------------
-
+    
 
 # print("Cuarto:  Ingresos promedio por cliente")
 # print((df.groupby("Customer ID")['Sales'].mean()).reset_index()['Sales'])

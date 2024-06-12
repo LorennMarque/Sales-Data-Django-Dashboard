@@ -23,7 +23,7 @@ def overview(request):
     sales_per_year = sales_per_year.to_json(orient='records')
 
     year_sales_total =  "{:,.2f}".format(round(df['Sales'].sum(), 2))
-    year_sales_amount = df[df['year'] == 2017]['Sales'].count()
+    year_sales_amount = df['Sales'].count()
     
     avg_delivery_time = int((df['delivery'].dt.total_seconds() / 3600).mean())
 
@@ -69,7 +69,6 @@ def orders(request):
     avg_delivery_time_per_ship_mode = round(df.groupby('Ship Mode')['delivery'].mean().dt.total_seconds() / 3600, 3).reset_index()
     avg_delivery_time_per_ship_mode = avg_delivery_time_per_ship_mode[avg_delivery_time_per_ship_mode['Ship Mode'] != 'Same Day']
     avg_delivery_time_per_ship_mode = avg_delivery_time_per_ship_mode.to_json(orient='records')
-    
 
     average_delivery_hours = df.groupby(["year", "month"])['delivery'].mean().dt.total_seconds() / 3600
     average_delivery_hours = average_delivery_hours.reset_index()

@@ -5,7 +5,20 @@
 {% block section %} 
 <i data-feather="home"></i> Overview {%endblock%}
 {% block content %}
-            <h4 data-aos="fade-zoom-in" >Historic Monthly Revenue</h4>
+
+<div class="row align-items-center">
+    <div class="col-lg-6">
+        <h4 data-aos="fade-zoom-in" >Historic Monthly Revenue</h4>
+    </div>
+    <div class="col-lg-6 text-lg-end text-start">
+        <div id="toggle-buttons">
+            <button class="toggle-button " data-year="2015">2015</button>
+            <button class="toggle-button " data-year="2016">2016</button>
+            <button class="toggle-button " data-year="2017">2017</button>
+            <button class="toggle-button " data-year="2018">2018</button>
+        </div>
+    </div>
+</div>
             <div class="card chart" data-aos="fade-zoom-in" data-aos-delay="100">
                 <canvas id="monthly_sales"></canvas>
             </div>
@@ -212,7 +225,6 @@
         });
     });
 </script>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var ctx = document.getElementById('monthly_sales').getContext('2d');
@@ -220,70 +232,72 @@
         var data_2016 = JSON.parse('{{ monthly_sales_2016|safe }}');
         var data_2017 = JSON.parse('{{ monthly_sales_2017|safe }}');
         var data_2018 = JSON.parse('{{ monthly_sales_2018|safe }}');
-
+    
         var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
+    
         function mapDataToMonths(data) {
             return data.map(function(item) {
                 return months[item['month'] - 1]; 
             });
         }
-
+    
         function mapDataToSales(data) {
             return data.map(function(item) {
                 return item['Sales'];
             });
         }
-
+    
         var ship_mode_2015 = mapDataToMonths(data_2015);
         var delivery_2015 = mapDataToSales(data_2015);
-
+    
         var ship_mode_2016 = mapDataToMonths(data_2016);
         var delivery_2016 = mapDataToSales(data_2016);
-
+    
         var ship_mode_2017 = mapDataToMonths(data_2017);
         var delivery_2017 = mapDataToSales(data_2017);
-
+    
         var ship_mode_2018 = mapDataToMonths(data_2018);
         var delivery_2018 = mapDataToSales(data_2018);
-
+    
+        var datasets = [{
+            label: '2015',
+            data: delivery_2015,
+            fill: false,
+            pointRadius: 5,
+            pointHoverRadius: 5,
+            borderColor: '#FF5733',
+            backgroundColor: '#FF5733'
+        }, {
+            label: '2016',
+            data: delivery_2016,
+            fill: false,
+            pointRadius: 5,
+            pointHoverRadius: 5,
+            borderColor: '#8850F1',
+            backgroundColor: '#8850F1'
+        }, {
+            label: '2017',
+            data: delivery_2017,
+            fill: false,
+            pointRadius: 5,
+            pointHoverRadius: 5,
+            borderColor: '#F15088',
+            backgroundColor: '#F15088'
+        }, {
+            label: '2018',
+            data: delivery_2018,
+            fill: false,
+            pointRadius: 5,
+            pointHoverRadius: 5,
+            borderColor: 'lightgreen',
+            backgroundColor: 'lightgreen'
+        }];
+    
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: ship_mode_2015,
-                datasets: [{
-                    label: '2015',
-                    data: delivery_2015,
-                    fill: false,
-                    pointRadius: 5,
-                    pointHoverRadius: 5,
-                    borderColor: '#FF5733',
-                    backgroundColor: '#FF5733'
-                }, {
-                    label: '2016',
-                    data: delivery_2016,
-                    fill: false,
-                    pointRadius: 5,
-                    pointHoverRadius: 5,
-                    borderColor: '#8850F1',
-                    backgroundColor: '#8850F1'
-                }, {
-                    label: '2017',
-                    data: delivery_2017,
-                    fill: false,
-                    pointRadius: 5,
-                    pointHoverRadius: 5,
-                    borderColor: '#F15088',
-                    backgroundColor: '#F15088'
-                }, {
-                    label: '2018',
-                    data: delivery_2018,
-                    fill: false,
-                    pointRadius: 5,
-                    pointHoverRadius: 5,
-                    borderColor: 'lightgreen',
-                    backgroundColor: 'lightgreen'
-                }]
+                datasets: datasets
             },
             options: {
                 responsive: true,
@@ -318,11 +332,56 @@
                             }
                         }
                     }
+                },
+                plugins: {
+                    legend: {
+                        onClick: function(e, legendItem, legend) {
+                            var index = legendItem.datasetIndex;
+                            var ci = legend.chart;
+                            var meta = ci.getDatasetMeta(index);
+    
+                            meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
+    
+                            legend.chart.update();
+    
+                            var year = ci.data.datasets[index].label;
+                            var button = document.querySelector(`.toggle-button[data-year="${year}"]`);
+                            button.classList.toggle('active', meta.hidden); // Toggle 'active' class based on dataset visibility
+                        }
+                    }
                 }
             }
         });
+    
+        document.querySelectorAll('.toggle-button').forEach(button => {
+            button.addEventListener('click', function() {
+                var year = this.getAttribute('data-year');
+                var datasetIndex = datasets.findIndex(dataset => dataset.label === year);
+                if (datasetIndex !== -1) {
+                    var meta = myChart.getDatasetMeta(datasetIndex);
+                    meta.hidden = !meta.hidden;
+                    this.classList.toggle('active', meta.hidden);
+                    myChart.update();
+                }
+            });
+        });
+    
+        // Ensure buttons reflect initial dataset visibility
+        document.querySelectorAll('.toggle-button').forEach(button => {
+            var year = button.getAttribute('data-year');
+            var datasetIndex = datasets.findIndex(dataset => dataset.label === year);
+            if (datasetIndex !== -1) {
+                var meta = myChart.getDatasetMeta(datasetIndex);
+                button.classList.toggle('active', meta.hidden);
+            }
+        });
     });
+    
+    
 </script>
+
+
+
 
 
     {% endblock %}

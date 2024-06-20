@@ -5,6 +5,8 @@ from brain.models import Customer, Sale
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
 
 data = pd.read_csv("data/supermarket_sales.csv")
 df = data
@@ -16,6 +18,8 @@ df['month'] = df['Order Date'].dt.month
 df['year'] = df['Order Date'].dt.year
 df['delivery'] = df['Ship Date'] - df['Order Date']
 df['year_month'] = df['year'].astype(str) + '-' + df['month'].astype(str).str.zfill(2)
+
+clean = df.groupby("year_month")['Sales'].count().reset_index()
 
 # ==================== VISTA GENERAL ====================================
 def overview(request):
@@ -66,10 +70,24 @@ def overview(request):
 
 # ==================== PEDIDOS =========================================
 def orders(request):
+    # Calcular tiempo promedio de entrega por modo de envío (excluyendo 'Same Day')
     avg_delivery_time_per_ship_mode = round(df.groupby('Ship Mode')['delivery'].mean().dt.total_seconds() / 3600, 3).reset_index()
     avg_delivery_time_per_ship_mode = avg_delivery_time_per_ship_mode[avg_delivery_time_per_ship_mode['Ship Mode'] != 'Same Day']
     avg_delivery_time_per_ship_mode = avg_delivery_time_per_ship_mode.to_json(orient='records')
 
+    # Ajustar modelo SARIMAX
+    model = SARIMAX(clean['Sales'], order=(0, 1, 1), seasonal_order=(0, 1, 1, 12))
+    model_fit = model.fit()
+
+    # Índice de inicio y fin para las predicciones
+    start_idx = clean.index[-1]  # Predecir desde el último índice actual
+    end_idx = start_idx + 11  # Predicciones por 12 meses
+
+    predictions = model_fit.predict(start=start_idx, end=end_idx, dynamic=True)
+    prediction_x_values = list(predictions.index)
+    prediction_y_values = list(predictions)
+
+    # Calcular horas promedio de entrega por mes y año
     average_delivery_hours = df.groupby(["year", "month"])['delivery'].mean().dt.total_seconds() / 3600
     average_delivery_hours = average_delivery_hours.reset_index()
     average_delivery_hours['date'] = average_delivery_hours['month'].astype(str) + '-' + average_delivery_hours['year'].astype(str)
@@ -78,9 +96,11 @@ def orders(request):
     result_data.columns = ['date', 'average_delivery_hours']
     result_data['average_delivery_hours'] = result_data['average_delivery_hours'].round(3)
     result_data = result_data.to_json(orient='records')
-    
+
+    # Calcular cantidad de ventas por mes y año
     amount_of_sales_per_month_and_year = df.groupby('year_month')['Sales'].count().reset_index()
     amount_of_sales_per_month_and_year = amount_of_sales_per_month_and_year.to_json(orient='records')
+
     # Obtener todos los pedidos ordenados por fecha de pedido
     orders = Sale.objects.all().order_by('-order_date')
 
@@ -102,14 +122,16 @@ def orders(request):
     # Pasar objetos de página a la plantilla
     context = {
         "page_obj": page_obj,
-        # También puedes pasar otros datos si es necesario
         "avg_delivery_time_per_ship_mode": avg_delivery_time_per_ship_mode,
         "monthly_delivery_time": result_data,
         "amount_of_sales_per_month_and_year": amount_of_sales_per_month_and_year,
         "active": 2,
+        "prediction_x_values": prediction_x_values,
+        "prediction_y_values": prediction_y_values,
     }
-    
+
     return render(request, 'orders.html', context)
+
 
 
 # ==================== PRODUCTOS ======================================
@@ -195,6 +217,8 @@ def customers(request):
     avg_revenue_perClient_year = df.groupby(["year", "Customer ID"])['Sales'].sum().groupby("year").mean().reset_index()
     avg_revenue_perClient_year = avg_revenue_perClient_year.to_json(orient="records")
     
+    total_amount_of_customers = Customer.objects.count()
+
     customers_list = Customer.objects.all()
     paginator = Paginator(customers_list, 20)  
 
@@ -206,6 +230,7 @@ def customers(request):
         'sales_per_city': sales_per_city,
         "top_10_customers":top_10_customers,
         "avg_revenue_perClient_year":avg_revenue_perClient_year,
+        "total_amount_of_customers":total_amount_of_customers,
         "active":4
         })
 

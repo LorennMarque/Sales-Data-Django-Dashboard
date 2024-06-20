@@ -3,6 +3,7 @@
 
 {% block section %}<i data-feather="truck"></i> Orders {%endblock%}
 {% block content %}
+
 <h4  data-aos="fade-zoom-in">Monthly Sales per year</h4>
 <div class="card amount_of_sales_per_month_and_year">
     <canvas  id="amount_of_sales_per_month_and_year"></canvas>
@@ -82,6 +83,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             var ctx = document.getElementById('amount_of_sales_per_month_and_year').getContext('2d');
             var data = JSON.parse('{{ amount_of_sales_per_month_and_year|safe }}'); // Asegúrate de pasar correctamente los datos JSON desde Django
+            
+            // Ordenar los datos por 'year_month'
+            data.sort(function(a, b) {
+                var dateA = new Date(a.year_month);
+                var dateB = new Date(b.year_month);
+                return dateA - dateB;
+            });
         
             var ship_mode = data.map(function(item) {
                 return item['year_month'];
@@ -91,17 +99,41 @@
                 return item['Sales'];
             });
         
+            // Generar etiquetas para los meses de 2019 (suponiendo que tengas 12 predicciones, una por cada mes)
+            var predictionLabels = [];
+            for (var i = 1; i <= 12; i++) {
+                predictionLabels.push('2019-' + (i < 10 ? '0' : '') + i); // Formato: 2019-01, 2019-02, ..., 2019-12
+            }
+        
+            // Agregar las etiquetas de predicción al final de las etiquetas existentes
+            var allLabels = ship_mode.concat(predictionLabels);
+        
+            // Datos de predicción para 2019 (asegúrate de que {{prediction_y_values}} tenga la misma cantidad de elementos que predictionLabels)
+            var predictionData = {{prediction_y_values}};
+            
+            // Defazar los valores de la predicción por 1 a la izquierda
+            var shiftedPredictionData = predictionData.slice(1).concat([null]);
+    
             var myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ship_mode,
+                    labels: allLabels,
                     datasets: [{
                         label: 'Sales per month',
-                        data: delivery,
+                        data: delivery.concat(new Array(predictionLabels.length).fill(null)), // Rellenar con null para alinear los datos de predicción
                         fill: true, // Indica que se debe llenar el área bajo la línea
                         backgroundColor: 'rgba(136, 80, 241, 0.3)', // Color violeta con poca opacidad
                         borderColor: '#8850F1', // Color de la línea
-                        borderWidth: 2 // Grosor de la línea
+                        borderWidth: 2, // Grosor de la línea
+                        spanGaps: true // Conectar los valores no nulos
+                    },{
+                        label: '2019 Sales Prediction',
+                        data: new Array(ship_mode.length - 1).fill(null).concat([delivery[delivery.length - 1]]).concat(shiftedPredictionData), // Rellenar con null para alinear con los datos de ventas y mover la predicción
+                        fill: true,
+                        backgroundColor: 'rgba(255, 87, 51,0.3)',
+                        borderColor: '#FF5733',
+                        borderWidth: 2, // Grosor de la línea
+                        spanGaps: true // Conectar los valores no nulos
                     }]
                 },
                 options: {
@@ -142,6 +174,10 @@
             });
         });
     </script>
+    
+        
+        
+    
 
     <script>
       var ctx = document.getElementById('avg_delivery_time_per_ship_mode').getContext('2d');

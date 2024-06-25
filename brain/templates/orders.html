@@ -4,7 +4,7 @@
 {% block section %}<i data-feather="truck"></i> Orders {%endblock%}
 {% block content %}
 
-<h4  data-aos="fade-zoom-in">Monthly Sales per year</h4>
+<h4  data-aos="fade-zoom-in">Monthly Sold Products per year</h4>
 <div class="card amount_of_sales_per_month_and_year">
     <canvas  id="amount_of_sales_per_month_and_year"></canvas>
 </div>
@@ -119,7 +119,7 @@
                 data: {
                     labels: allLabels,
                     datasets: [{
-                        label: 'Sales per month',
+                        label: 'Products Sold per month',
                         data: delivery.concat(new Array(predictionLabels.length).fill(null)), // Rellenar con null para alinear los datos de predicción
                         fill: true, // Indica que se debe llenar el área bajo la línea
                         backgroundColor: 'rgba(136, 80, 241, 0.3)', // Color violeta con poca opacidad
@@ -144,7 +144,7 @@
                             beginAtZero: false,
                             title: {
                                 display: true,
-                                text: 'Sale Amount',
+                                text: 'Products Sold',
                                 font: {
                                     size: 16
                                 }

@@ -218,7 +218,6 @@ def customers(request):
     avg_revenue_perClient_year = avg_revenue_perClient_year.to_json(orient="records")
     
     total_amount_of_customers = Customer.objects.count()
-
     customers_list = Customer.objects.all()
     paginator = Paginator(customers_list, 20)  
 

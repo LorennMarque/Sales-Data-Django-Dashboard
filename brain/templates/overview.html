@@ -11,11 +11,11 @@
         <h4 data-aos="fade-zoom-in" >Historic Monthly Revenue</h4>
     </div>
     <div class="col-lg-6 text-lg-end text-start">
-        <div id="toggle-buttons">
-            <button class="toggle-button " data-year="2015">2015</button>
-            <button class="toggle-button " data-year="2016">2016</button>
-            <button class="toggle-button " data-year="2017">2017</button>
-            <button class="toggle-button " data-year="2018">2018</button>
+        <div class="btn-group" role="group" aria-label="Basic example" id="toggle-buttons">
+            <button type="button" class="toggle-button" data-year="2015">2015</button>
+            <button type="button" class="toggle-button" data-year="2016">2016</button>
+            <button type="button" class="toggle-button" data-year="2017">2017</button>
+            <button type="button" class="toggle-button" data-year="2018">2018</button>
         </div>
     </div>
 </div>
@@ -265,7 +265,7 @@
             fill: false,
             pointRadius: 5,
             pointHoverRadius: 5,
-            borderColor: '#FF5733',
+            borderColor: '#FF5733', // Orange
             backgroundColor: '#FF5733'
         }, {
             label: '2016',
@@ -273,7 +273,7 @@
             fill: false,
             pointRadius: 5,
             pointHoverRadius: 5,
-            borderColor: '#8850F1',
+            borderColor: '#8850F1', // Purple
             backgroundColor: '#8850F1'
         }, {
             label: '2017',
@@ -281,7 +281,7 @@
             fill: false,
             pointRadius: 5,
             pointHoverRadius: 5,
-            borderColor: '#F15088',
+            borderColor: '#F15088', // Pink
             backgroundColor: '#F15088'
         }, {
             label: '2018',
@@ -289,8 +289,8 @@
             fill: false,
             pointRadius: 5,
             pointHoverRadius: 5,
-            borderColor: 'lightgreen',
-            backgroundColor: 'lightgreen'
+            borderColor: '#4CAF50', // Green
+            backgroundColor: '#4CAF50'
         }];
     
         var myChart = new Chart(ctx, {

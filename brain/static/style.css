@@ -1,34 +1,62 @@
-
 #sidebar {
     min-height: 100vh;
+    background-color: #ffffff;
+    transition: background-color 0.3s ease;
 }
+
 #sidebar .nav-link {
     color: #545f75;
+    transition: color 0.3s ease;
+}
+
+#sidebar .nav-link:hover {
+    color: #8850F1;
 }
 
 main {
     background-color: #F7F8FC;
 }
 
-#sidebar {
-    background-color: #ffff;
-}
-
 .nav-item a {
     font-size: 20px;
+    transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .nav-item.active a {
-    color: #FFFFFF; /* Aquí cambiamos el color de las letras a blanco */
+    color: #FFFFFF; /* Change text color to white */
 }
 
 .nav-item.active {
     background-color: #8850F1;
+    animation: active-state 0.5s ease-in-out;
 }
 
 .nav-item {
     border-bottom: 2px solid #f7f7f7;
     border-radius: 10px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.nav-item:hover {
+    background-color: #f0f0f0;
+    border-color: #e0e0e0;
+}
+
+.nav-item.active:hover {
+    background-color: #8850F1; /* Disable hover effect for active item */
+    border-color: #8850F1; /* Disable hover effect for active item */
+}
+
+@keyframes active-state {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 body {
